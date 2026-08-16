@@ -6,8 +6,9 @@ set -e
 
 echo "=== Esref Deploy Başlıyor ==="
 
-# En son kodu çek
-git pull
+# En son kodu çek (sunucudaki her türlü yerel değişikliği ez)
+git fetch origin
+git reset --hard origin/main
 
 # Node.js kur (eğer yoksa)
 if ! command -v node &> /dev/null; then
