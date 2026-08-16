@@ -6,6 +6,9 @@ set -e
 
 echo "=== Esref Deploy Başlıyor ==="
 
+# En son kodu çek
+git pull
+
 # Node.js kur (eğer yoksa)
 if ! command -v node &> /dev/null; then
   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
