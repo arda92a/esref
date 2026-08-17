@@ -107,4 +107,14 @@ body {
   .animate-fade-in-up {
     animation: fade-in-up 0.7s ease-out both;
   }
+
+  .bg-blueprint {
+    background-image: radial-gradient(circle, oklch(0 0 0 / 8%) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .bg-blueprint-invert {
+    background-image: radial-gradient(circle, oklch(1 0 0 / 18%) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Eye, Target } from "lucide-react";
 
 import Reveal from "@/components/Reveal";
 import { siteConfig } from "@/lib/site-config";
@@ -32,14 +33,23 @@ export default function AboutPage() {
       </div>
 
       <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        <Reveal className="rounded-lg border bg-card p-6">
-          <h2 className="font-semibold">Vizyonumuz</h2>
+        <Reveal className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/5 to-transparent p-6">
+          <div className="flex size-11 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <Eye className="size-5" />
+          </div>
+          <h2 className="mt-4 font-semibold">Vizyonumuz</h2>
           <p className="mt-3 text-sm text-muted-foreground">
             {siteConfig.vision}
           </p>
         </Reveal>
-        <Reveal delay={100} className="rounded-lg border bg-card p-6">
-          <h2 className="font-semibold">Misyonumuz</h2>
+        <Reveal
+          delay={100}
+          className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/5 to-transparent p-6"
+        >
+          <div className="flex size-11 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <Target className="size-5" />
+          </div>
+          <h2 className="mt-4 font-semibold">Misyonumuz</h2>
           <p className="mt-3 text-sm text-muted-foreground">
             {siteConfig.mission}
           </p>
@@ -48,4 +58,5 @@ export default function AboutPage() {
     </section>
   );
 }
+
 
