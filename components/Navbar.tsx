@@ -52,6 +52,7 @@ export default function Navbar() {
               transparent && "drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
             )}
             priority
+            unoptimized
           />
           {siteConfig.name}
         </Link>

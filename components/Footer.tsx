@@ -19,6 +19,7 @@ export default function Footer() {
               width={440}
               height={512}
               className="h-8 w-auto"
+              unoptimized
             />
             {siteConfig.name}
           </div>
