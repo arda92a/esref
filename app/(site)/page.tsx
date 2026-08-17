@@ -37,6 +37,7 @@ export default async function Home() {
     (p) => p.status === "devam-ediyor"
   ).length;
   const featuredProjects = projects.slice(0, 6);
+  const experienceYears = new Date().getFullYear() - siteConfig.foundedYear;
 
   return (
     <div>
@@ -88,7 +89,7 @@ export default async function Home() {
 
       <section className="border-t">
         <div className="mx-auto grid max-w-6xl grid-cols-3 gap-6 px-4 py-16 sm:px-6">
-          <StatsCounter value={siteConfig.experienceYears} suffix="+" label="Yıl Deneyim" />
+          <StatsCounter value={experienceYears} suffix="+" label="Yıl Deneyim" />
           <StatsCounter value={completedCount} suffix="+" label="Tamamlanan Proje" />
           <StatsCounter value={ongoingCount} suffix="+" label="Devam Eden Proje" />
         </div>

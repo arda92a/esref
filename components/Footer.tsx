@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Building2, MapPin, Phone } from "lucide-react";
 
+import FacebookIcon from "@/components/icons/FacebookIcon";
 import { siteConfig, navLinks } from "@/lib/site-config";
 
 export default function Footer() {
@@ -46,6 +47,17 @@ export default function Footer() {
                 className="hover:text-foreground"
               >
                 {siteConfig.phone}
+              </a>
+            </li>
+            <li className="flex items-center gap-2">
+              <FacebookIcon className="size-4 shrink-0" />
+              <a
+                href={siteConfig.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground"
+              >
+                Facebook
               </a>
             </li>
           </ul>

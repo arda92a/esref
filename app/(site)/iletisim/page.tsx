@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { MapPin, Phone, Mail } from "lucide-react";
 
 import ContactForm from "@/components/ContactForm";
+import FacebookIcon from "@/components/icons/FacebookIcon";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -23,7 +24,14 @@ export default function ContactPage() {
           <div className="space-y-4 text-sm">
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
-              <span>{siteConfig.address}</span>
+              <a
+                href={siteConfig.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                {siteConfig.address}
+              </a>
             </div>
             <div className="flex items-center gap-3">
               <Phone className="size-5 shrink-0 text-muted-foreground" />
@@ -35,6 +43,17 @@ export default function ContactPage() {
               <Mail className="size-5 shrink-0 text-muted-foreground" />
               <a href={`mailto:${siteConfig.email}`} className="hover:underline">
                 {siteConfig.email}
+              </a>
+            </div>
+            <div className="flex items-center gap-3">
+              <FacebookIcon className="size-5 shrink-0 text-muted-foreground" />
+              <a
+                href={siteConfig.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                Facebook
               </a>
             </div>
           </div>
