@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X, Building2 } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { siteConfig, navLinks } from "@/lib/site-config";
@@ -33,7 +34,14 @@ export default function Navbar() {
           className="flex items-center gap-2 font-semibold tracking-tight transition-opacity hover:opacity-80"
           onClick={() => setOpen(false)}
         >
-          <Building2 className="size-6" />
+          <Image
+            src="/logo-mark.png"
+            alt=""
+            width={440}
+            height={512}
+            className="h-9 w-auto"
+            priority
+          />
           {siteConfig.name}
         </Link>
 
