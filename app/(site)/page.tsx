@@ -1,5 +1,14 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Clock, Award } from "lucide-react";
+import {
+  ArrowRight,
+  ShieldCheck,
+  Clock,
+  Award,
+  Building2,
+  Home as HomeIcon,
+  Store,
+  KeyRound,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import FeaturedProjects from "@/components/FeaturedProjects";
@@ -25,6 +34,13 @@ const highlights = [
     title: "Deneyimli Ekip",
     description: "Yılların tecrübesiyle uçtan uca proje yönetimi.",
   },
+];
+
+const services = [
+  { icon: Building2, title: "İnşaat Müteahhitliği" },
+  { icon: HomeIcon, title: "Konut İnşaatları" },
+  { icon: Store, title: "Ticari Yapılar" },
+  { icon: KeyRound, title: "Anahtar Teslim Projeler" },
 ];
 
 export const revalidate = 60;
@@ -96,6 +112,36 @@ export default async function Home() {
               </p>
             </Reveal>
           ))}
+        </div>
+
+        <div className="absolute inset-x-0 bottom-0 translate-y-px text-background">
+          <WaveDivider />
+        </div>
+      </section>
+
+      <section className="relative">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              Hizmetlerimiz
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              İnşaat sektöründe sunduğumuz başlıca hizmet alanları.
+            </p>
+          </Reveal>
+
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map(({ icon: Icon, title }, i) => (
+              <Reveal key={title} delay={i * 100}>
+                <div className="flex h-full flex-col items-center gap-4 rounded-2xl border bg-card p-6 text-center shadow-sm transition-shadow hover:shadow-md">
+                  <div className="flex size-12 items-center justify-center rounded-full bg-brand/10 text-brand">
+                    <Icon className="size-6" />
+                  </div>
+                  <h3 className="font-semibold">{title}</h3>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
 
         <div className="absolute inset-x-0 bottom-0 translate-y-px text-brand">
