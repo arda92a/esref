@@ -41,7 +41,10 @@ export default async function Home() {
 
   return (
     <div>
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+      <section className="relative mx-auto max-w-6xl overflow-hidden px-4 py-20 sm:px-6 sm:py-28">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-32 left-1/2 size-[36rem] -translate-x-1/2 rounded-full bg-brand/15 blur-3xl" />
+        </div>
         <div className="mx-auto max-w-2xl text-center">
           <h1
             className="animate-fade-in-up text-4xl font-semibold tracking-tight sm:text-5xl"
@@ -75,7 +78,7 @@ export default async function Home() {
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 md:grid-cols-3">
           {highlights.map(({ icon: Icon, title, description }, i) => (
             <Reveal key={title} delay={i * 100} className="text-center sm:text-left">
-              <div className="mx-auto flex size-12 items-center justify-center rounded-lg bg-background shadow-sm sm:mx-0">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand/10 text-brand sm:mx-0">
                 <Icon className="size-6" />
               </div>
               <h3 className="mt-4 font-semibold">{title}</h3>
