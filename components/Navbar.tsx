@@ -13,6 +13,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const isHome = pathname === "/";
+  const transparent = isHome && !scrolled && !open;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -24,14 +26,20 @@ export default function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 border-b bg-background/95 backdrop-blur transition-shadow supports-[backdrop-filter]:bg-background/80",
-        scrolled && "shadow-sm"
+        "sticky top-0 z-40 transition-colors duration-300",
+        transparent
+          ? "bg-transparent"
+          : "border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80",
+        scrolled && !transparent && "shadow-sm"
       )}
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2 font-semibold tracking-tight transition-opacity hover:opacity-80"
+          className={cn(
+            "flex items-center gap-2 font-semibold tracking-tight transition-opacity hover:opacity-80",
+            transparent ? "text-white" : "text-foreground"
+          )}
           onClick={() => setOpen(false)}
         >
           <Image
@@ -39,7 +47,10 @@ export default function Navbar() {
             alt=""
             width={440}
             height={512}
-            className="h-9 w-auto"
+            className={cn(
+              "h-9 w-auto transition-[filter] duration-300",
+              transparent && "drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
+            )}
             priority
           />
           {siteConfig.name}
@@ -51,11 +62,17 @@ export default function Navbar() {
               <Link
                 href={link.href}
                 className={cn(
-                  "relative transition-colors hover:text-foreground",
-                  "after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-foreground after:transition-all after:duration-300 hover:after:w-full",
-                  pathname === link.href
-                    ? "text-foreground after:w-full"
-                    : "text-muted-foreground"
+                  "relative transition-colors",
+                  transparent
+                    ? cn(
+                        "hover:text-white after:bg-white",
+                        pathname === link.href ? "text-white after:w-full" : "text-white/70"
+                      )
+                    : cn(
+                        "hover:text-foreground after:bg-foreground",
+                        pathname === link.href ? "text-foreground after:w-full" : "text-muted-foreground"
+                      ),
+                  "after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-300 hover:after:w-full"
                 )}
               >
                 {link.label}
@@ -67,7 +84,10 @@ export default function Navbar() {
         <button
           type="button"
           aria-label="Menüyü aç/kapat"
-          className="inline-flex size-10 items-center justify-center rounded-md transition-colors hover:bg-secondary md:hidden"
+          className={cn(
+            "inline-flex size-10 items-center justify-center rounded-md transition-colors md:hidden",
+            transparent ? "text-white hover:bg-white/10" : "hover:bg-secondary"
+          )}
           onClick={() => setOpen((v) => !v)}
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}

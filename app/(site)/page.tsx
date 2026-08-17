@@ -58,66 +58,76 @@ export default async function Home() {
 
   return (
     <div>
-      <section className="relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-blueprint" />
-          <div className="absolute -top-32 left-1/2 size-[36rem] -translate-x-1/2 rounded-full bg-brand/15 blur-3xl" />
-        </div>
+      <div className="relative -mt-16 overflow-hidden text-white">
+        <video
+          className="absolute inset-0 -z-20 size-full object-cover object-[50%_30%]"
+          src="/hero-bg.mp4"
+          poster="/hero-bg-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-black/75 via-black/55 to-black/70"
+        />
 
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-2xl text-center">
-            <h1
-              className="animate-fade-in-up text-4xl font-semibold tracking-tight sm:text-5xl"
-              style={{ animationDelay: "0ms" }}
-            >
-              Geleceğin Yapılarını Bugünden İnşa Ediyoruz
-            </h1>
-            <p
-              className="animate-fade-in-up mt-6 text-lg text-muted-foreground"
-              style={{ animationDelay: "120ms" }}
-            >
-              {siteConfig.name}, gayrimenkul ve inşaat projelerinde güvenilirlik,
-              kalite ve zamanında teslimi ilke edinir. Konut ve ticari
-              projelerimizle şehrin dokusuna değer katıyoruz.
-            </p>
-            <div
-              className="animate-fade-in-up mt-10 flex justify-center"
-              style={{ animationDelay: "240ms" }}
-            >
-              <Button asChild size="lg" className="group">
-                <Link href="/projeler">
-                  Projelerimizi İnceleyin
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
+        <section className="relative">
+          <div className="mx-auto max-w-6xl px-4 pt-32 pb-20 sm:px-6 sm:pt-40 sm:pb-28">
+            <div className="mx-auto max-w-2xl text-center">
+              <h1
+                className="animate-fade-in-up text-4xl font-semibold tracking-tight sm:text-5xl"
+                style={{ animationDelay: "0ms" }}
+              >
+                Geleceğin Yapılarını Bugünden İnşa Ediyoruz
+              </h1>
+              <p
+                className="animate-fade-in-up mt-6 text-lg text-white/80"
+                style={{ animationDelay: "120ms" }}
+              >
+                {siteConfig.name}, gayrimenkul ve inşaat projelerinde güvenilirlik,
+                kalite ve zamanında teslimi ilke edinir. Konut ve ticari
+                projelerimizle şehrin dokusuna değer katıyoruz.
+              </p>
+              <div
+                className="animate-fade-in-up mt-10 flex justify-center"
+                style={{ animationDelay: "240ms" }}
+              >
+                <Button asChild size="lg" className="group">
+                  <Link href="/projeler">
+                    Projelerimizi İnceleyin
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="absolute inset-x-0 bottom-0 text-secondary">
-          <WaveDivider />
-        </div>
-      </section>
-
-      <section className="relative bg-secondary/40">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 md:grid-cols-3">
-          {highlights.map(({ icon: Icon, title, description }, i) => (
-            <Reveal key={title} delay={i * 100} className="text-center sm:text-left">
-              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand/10 text-brand sm:mx-0">
-                <Icon className="size-6" />
-              </div>
-              <h3 className="mt-4 font-semibold">{title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {description}
-              </p>
-            </Reveal>
-          ))}
-        </div>
+        <section className="relative">
+          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 md:grid-cols-3">
+            {highlights.map(({ icon: Icon, title, description }, i) => (
+              <Reveal key={title} delay={i * 100} className="text-center sm:text-left">
+                <div className="h-full rounded-2xl border border-white/15 bg-white/10 p-6 backdrop-blur-md">
+                  <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-white/15 text-white sm:mx-0">
+                    <Icon className="size-6" />
+                  </div>
+                  <h3 className="mt-4 font-semibold text-white">{title}</h3>
+                  <p className="mt-2 text-sm text-white/75">
+                    {description}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
 
         <div className="absolute inset-x-0 bottom-0 translate-y-px text-background">
           <WaveDivider />
         </div>
-      </section>
+      </div>
 
       <section className="relative">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
