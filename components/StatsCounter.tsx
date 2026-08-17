@@ -40,7 +40,7 @@ export default function StatsCounter({
         {count}
         {suffix}
       </p>
-      <p className="mt-2 text-sm text-muted-foreground">{label}</p>
+      <p className="mt-2 text-sm text-current opacity-80">{label}</p>
     </div>
   );
 }

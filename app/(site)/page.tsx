@@ -90,7 +90,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-t">
+      <section className="bg-brand text-brand-foreground">
         <div className="mx-auto grid max-w-6xl grid-cols-3 gap-6 px-4 py-16 sm:px-6">
           <StatsCounter value={experienceYears} suffix="+" label="Yıl Deneyim" />
           <StatsCounter value={completedCount} suffix="+" label="Tamamlanan Proje" />
@@ -110,7 +110,7 @@ export default async function Home() {
               </p>
             </Reveal>
 
-            <div className="mt-10">
+            <div className="mt-10 rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
               <FeaturedProjects projects={featuredProjects} />
             </div>
           </div>

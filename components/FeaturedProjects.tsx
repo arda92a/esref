@@ -55,7 +55,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
           aria-label="Önceki projeler"
           disabled={!canScrollPrev}
           onClick={() => emblaApi?.scrollPrev()}
-          className="inline-flex size-9 items-center justify-center rounded-full border transition-colors hover:bg-secondary disabled:pointer-events-none disabled:opacity-30"
+          className="inline-flex size-9 items-center justify-center rounded-full border transition-colors hover:border-brand hover:text-brand disabled:pointer-events-none disabled:opacity-30"
         >
           <ChevronLeft className="size-4" />
         </button>
@@ -69,7 +69,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
               onClick={() => emblaApi?.scrollTo(i)}
               className={cn(
                 "size-1.5 rounded-full transition-all",
-                i === selectedIndex ? "w-4 bg-foreground" : "bg-muted-foreground/30"
+                i === selectedIndex ? "w-4 bg-brand" : "bg-muted-foreground/30"
               )}
             />
           ))}
@@ -80,7 +80,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
           aria-label="Sonraki projeler"
           disabled={!canScrollNext}
           onClick={() => emblaApi?.scrollNext()}
-          className="inline-flex size-9 items-center justify-center rounded-full border transition-colors hover:bg-secondary disabled:pointer-events-none disabled:opacity-30"
+          className="inline-flex size-9 items-center justify-center rounded-full border transition-colors hover:border-brand hover:text-brand disabled:pointer-events-none disabled:opacity-30"
         >
           <ChevronRight className="size-4" />
         </button>
