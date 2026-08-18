@@ -5,6 +5,7 @@ import { MapPin } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import ProjectGallery from "@/components/ProjectGallery";
+import ProjectDetails from "@/components/ProjectDetails";
 import { getProjectBySlug } from "@/lib/supabase/queries";
 
 export const revalidate = 60;
@@ -67,6 +68,8 @@ export default async function ProjectDetailPage({ params }: Props) {
           {project.description}
         </p>
       )}
+
+      <ProjectDetails project={project} />
 
       {project.gallery_images.length > 0 && (
         <div className="mt-10">

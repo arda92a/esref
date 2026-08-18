@@ -58,6 +58,29 @@ export async function saveProject(formData: FormData) {
 
   if (!title) throw new Error("Proje adı zorunludur.");
 
+  const propertyType = formData.get("property_type")?.toString() || null;
+  const priceRaw = formData.get("price")?.toString().trim();
+  const price = priceRaw ? Number(priceRaw) : null;
+  const priceCurrency = price !== null
+    ? formData.get("price_currency")?.toString() || "GBP"
+    : null;
+  const areaRaw = formData.get("area_m2")?.toString().trim();
+  const areaM2 = areaRaw ? Number(areaRaw) : null;
+  const roomConfig = formData.get("room_config")?.toString() || null;
+  const bathroomRaw = formData.get("bathroom_count")?.toString().trim();
+  const bathroomCount = bathroomRaw ? Number(bathroomRaw) : null;
+  const buildingAgeRaw = formData.get("building_age")?.toString().trim();
+  const buildingAge = buildingAgeRaw ? Number(buildingAgeRaw) : null;
+  const floorCountRaw = formData.get("floor_count")?.toString().trim();
+  const floorCount = floorCountRaw ? Number(floorCountRaw) : null;
+  const floorNo = formData.get("floor_no")?.toString().trim() || null;
+  const furnishing = formData.get("furnishing")?.toString() || null;
+  const hasParking = formData.get("has_parking") === "true";
+  const hasPool = formData.get("has_pool") === "true";
+  const hasBalcony = formData.get("has_balcony") === "true";
+  const mortgageEligible = formData.get("mortgage_eligible") === "true";
+  const swapEligible = formData.get("swap_eligible") === "true";
+
   const coverFile = formData.get("cover_image");
   const existingCoverUrl = formData.get("existing_cover_url")?.toString() || null;
   const coverUrl =
@@ -86,6 +109,21 @@ export async function saveProject(formData: FormData) {
         status,
         cover_image: coverUrl,
         gallery_images: galleryImages,
+        property_type: propertyType,
+        price,
+        price_currency: priceCurrency,
+        area_m2: areaM2,
+        room_config: roomConfig,
+        bathroom_count: bathroomCount,
+        building_age: buildingAge,
+        floor_count: floorCount,
+        floor_no: floorNo,
+        furnishing,
+        has_parking: hasParking,
+        has_pool: hasPool,
+        has_balcony: hasBalcony,
+        mortgage_eligible: mortgageEligible,
+        swap_eligible: swapEligible,
       })
       .eq("id", id);
     if (error) throw new Error(error.message);
@@ -99,6 +137,21 @@ export async function saveProject(formData: FormData) {
       status,
       cover_image: coverUrl,
       gallery_images: galleryImages,
+      property_type: propertyType,
+      price,
+      price_currency: priceCurrency,
+      area_m2: areaM2,
+      room_config: roomConfig,
+      bathroom_count: bathroomCount,
+      building_age: buildingAge,
+      floor_count: floorCount,
+      floor_no: floorNo,
+      furnishing,
+      has_parking: hasParking,
+      has_pool: hasPool,
+      has_balcony: hasBalcony,
+      mortgage_eligible: mortgageEligible,
+      swap_eligible: swapEligible,
     });
     if (error) throw new Error(error.message);
   }

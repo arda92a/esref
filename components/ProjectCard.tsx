@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MapPin } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { formatPrice } from "@/lib/utils";
 import type { Project } from "@/types/project";
 
 export default function ProjectCard({ project }: { project: Project }) {
@@ -33,11 +34,22 @@ export default function ProjectCard({ project }: { project: Project }) {
         </Badge>
       </div>
       <div className="p-4">
-        <h3 className="font-semibold">{project.title}</h3>
-        {project.location && (
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-semibold">{project.title}</h3>
+          {project.price != null && project.price_currency && (
+            <span className="shrink-0 text-sm font-semibold text-brand">
+              {formatPrice(project.price, project.price_currency)}
+            </span>
+          )}
+        </div>
+        {(project.location || project.area_m2 != null) && (
           <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
             <MapPin className="size-3.5 shrink-0" />
-            {project.location}
+            <span className="truncate">
+              {[project.location, project.area_m2 != null ? `${project.area_m2} m²` : null]
+                .filter(Boolean)
+                .join(" · ")}
+            </span>
           </p>
         )}
       </div>

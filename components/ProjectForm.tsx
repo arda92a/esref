@@ -15,7 +15,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { saveProject } from "@/app/admin/projelerim/actions";
-import type { Project, ProjectStatus } from "@/types/project";
+import {
+  FURNISHING_LABELS,
+  HOUSING_PROPERTY_TYPES,
+  PROPERTY_TYPE_LABELS,
+  ROOM_CONFIG_LABELS,
+  type Furnishing,
+  type PriceCurrency,
+  type Project,
+  type PropertyType,
+  type ProjectStatus,
+  type RoomConfig,
+} from "@/types/project";
+
+const NONE = "none";
+
+function AmenityCheckbox({
+  name,
+  label,
+  defaultChecked,
+}: {
+  name: string;
+  label: string;
+  defaultChecked?: boolean;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+      <input
+        type="checkbox"
+        name={name}
+        value="true"
+        defaultChecked={defaultChecked}
+        className="size-4 accent-primary"
+      />
+      {label}
+    </label>
+  );
+}
 
 export default function ProjectForm({ project }: { project?: Project }) {
   const [coverPreview, setCoverPreview] = useState<string | null>(
@@ -28,6 +64,22 @@ export default function ProjectForm({ project }: { project?: Project }) {
   const [status, setStatus] = useState<ProjectStatus>(
     project?.status ?? "devam-ediyor"
   );
+  const [propertyType, setPropertyType] = useState<PropertyType | typeof NONE>(
+    project?.property_type ?? NONE
+  );
+  const [priceCurrency, setPriceCurrency] = useState<PriceCurrency>(
+    project?.price_currency ?? "GBP"
+  );
+  const [roomConfig, setRoomConfig] = useState<RoomConfig | typeof NONE>(
+    project?.room_config ?? NONE
+  );
+  const [furnishing, setFurnishing] = useState<Furnishing | typeof NONE>(
+    project?.furnishing ?? NONE
+  );
+
+  const showHousingDetails =
+    propertyType === NONE ||
+    HOUSING_PROPERTY_TYPES.includes(propertyType as PropertyType);
 
   function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -103,6 +155,224 @@ export default function ProjectForm({ project }: { project?: Project }) {
             <SelectItem value="tamamlandi">Tamamlandı</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-4 rounded-lg border p-4">
+        <h3 className="text-sm font-semibold text-foreground">
+          Emlak Bilgileri
+        </h3>
+
+        <input
+          type="hidden"
+          name="property_type"
+          value={propertyType === NONE ? "" : propertyType}
+        />
+        <div className="space-y-1.5">
+          <Label>Emlak Türü</Label>
+          <Select
+            value={propertyType}
+            onValueChange={(v) => setPropertyType(v as PropertyType)}
+          >
+            <SelectTrigger className="w-full sm:w-56">
+              <SelectValue placeholder="Seçilmedi" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={NONE}>Seçilmedi</SelectItem>
+              {Object.entries(PROPERTY_TYPE_LABELS).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="price">Fiyat</Label>
+            <div className="flex gap-2">
+              <Input
+                id="price"
+                name="price"
+                type="number"
+                min={0}
+                step="any"
+                inputMode="decimal"
+                defaultValue={project?.price ?? ""}
+                placeholder="Örn: 250000"
+              />
+              <input type="hidden" name="price_currency" value={priceCurrency} />
+              <Select
+                value={priceCurrency}
+                onValueChange={(v) => setPriceCurrency(v as PriceCurrency)}
+              >
+                <SelectTrigger className="w-24 shrink-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="GBP">£</SelectItem>
+                  <SelectItem value="USD">$</SelectItem>
+                  <SelectItem value="TRY">₺</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="area_m2">Metrekare (m²)</Label>
+            <Input
+              id="area_m2"
+              name="area_m2"
+              type="number"
+              min={0}
+              step="any"
+              inputMode="decimal"
+              defaultValue={project?.area_m2 ?? ""}
+              placeholder="Örn: 120"
+            />
+          </div>
+        </div>
+      </div>
+
+      {showHousingDetails && (
+        <div className="space-y-4 rounded-lg border p-4">
+          <h3 className="text-sm font-semibold text-foreground">
+            Konut Detayları
+          </h3>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label>Oda Sayısı</Label>
+              <input
+                type="hidden"
+                name="room_config"
+                value={roomConfig === NONE ? "" : roomConfig}
+              />
+              <Select
+                value={roomConfig}
+                onValueChange={(v) => setRoomConfig(v as RoomConfig)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seçilmedi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Seçilmedi</SelectItem>
+                  {Object.entries(ROOM_CONFIG_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="bathroom_count">Banyo Sayısı</Label>
+              <Input
+                id="bathroom_count"
+                name="bathroom_count"
+                type="number"
+                min={0}
+                step={1}
+                defaultValue={project?.bathroom_count ?? ""}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="building_age">Bina Yaşı (yıl)</Label>
+              <Input
+                id="building_age"
+                name="building_age"
+                type="number"
+                min={0}
+                step={1}
+                defaultValue={project?.building_age ?? ""}
+                placeholder="Örn: 3"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="floor_count">Bina Kat Sayısı</Label>
+              <Input
+                id="floor_count"
+                name="floor_count"
+                type="number"
+                min={0}
+                step={1}
+                defaultValue={project?.floor_count ?? ""}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="floor_no">Bulunduğu Kat</Label>
+              <Input
+                id="floor_no"
+                name="floor_no"
+                defaultValue={project?.floor_no ?? ""}
+                placeholder="Örn: 3, Zemin, Çatı Katı"
+                maxLength={30}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Eşya Durumu</Label>
+              <input
+                type="hidden"
+                name="furnishing"
+                value={furnishing === NONE ? "" : furnishing}
+              />
+              <Select
+                value={furnishing}
+                onValueChange={(v) => setFurnishing(v as Furnishing)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seçilmedi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Seçilmedi</SelectItem>
+                  {Object.entries(FURNISHING_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-2">
+        <h3 className="text-sm font-semibold text-foreground">
+          Ek Özellikler
+        </h3>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <AmenityCheckbox
+            name="has_parking"
+            label="Otopark"
+            defaultChecked={project?.has_parking}
+          />
+          <AmenityCheckbox
+            name="has_pool"
+            label="Havuz"
+            defaultChecked={project?.has_pool}
+          />
+          <AmenityCheckbox
+            name="has_balcony"
+            label="Balkon/Teras"
+            defaultChecked={project?.has_balcony}
+          />
+          <AmenityCheckbox
+            name="mortgage_eligible"
+            label="Krediye Uygun"
+            defaultChecked={project?.mortgage_eligible}
+          />
+          <AmenityCheckbox
+            name="swap_eligible"
+            label="Takasa Uygun"
+            defaultChecked={project?.swap_eligible}
+          />
+        </div>
       </div>
 
       <div className="space-y-1.5">
