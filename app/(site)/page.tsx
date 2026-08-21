@@ -12,7 +12,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import FeaturedProjects from "@/components/FeaturedProjects";
-import HomeScrollSnap from "@/components/HomeScrollSnap";
 import Reveal from "@/components/Reveal";
 import StatsCounter from "@/components/StatsCounter";
 import WaveDivider from "@/components/WaveDivider";
@@ -59,8 +58,7 @@ export default async function Home() {
 
   return (
     <div>
-      <HomeScrollSnap />
-      <div className="relative -mt-16 overflow-hidden text-white lg:snap-start">
+      <div className="relative -mt-16 overflow-hidden text-white">
         <video
           className="absolute inset-0 -z-20 size-full object-cover object-[50%_30%]"
           src="/hero-bg.mp4"
@@ -131,7 +129,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <section className="relative lg:snap-start lg:scroll-mt-16">
+      <section className="relative">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
           <Reveal className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -161,7 +159,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-brand text-brand-foreground lg:snap-start lg:scroll-mt-16">
+      <section className="relative overflow-hidden bg-brand text-brand-foreground">
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-blueprint-invert" />
         <div className="mx-auto grid max-w-6xl grid-cols-3 gap-6 px-4 py-16 sm:px-6">
           <StatsCounter value={experienceYears} suffix="+" label="Yıl Deneyim" />
@@ -175,7 +173,7 @@ export default async function Home() {
       </section>
 
       {featuredProjects.length > 0 && (
-        <section className="bg-secondary/40 lg:snap-start lg:scroll-mt-16">
+        <section className="bg-secondary/40">
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
             <Reveal>
               <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">

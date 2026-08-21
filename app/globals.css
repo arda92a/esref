@@ -118,10 +118,3 @@ body {
     background-size: 22px 22px;
   }
 }
-
-/* Desktop-only step scroll-snap, toggled on <html> only while the home page is mounted */
-@media (min-width: 1024px) {
-  html.snap-page {
-    scroll-snap-type: y mandatory;
-  }
-}
