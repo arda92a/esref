@@ -16,8 +16,8 @@ server {
     ssl_certificate /etc/letsencrypt/live/ardalab.com.tr/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/ardalab.com.tr/privkey.pem;
 
-    # Form/fotoğraf yükleme boyutu
-    client_max_body_size 10M;
+    # Form/fotoğraf yükleme boyutu (next.config.ts serverActions.bodySizeLimit ile uyumlu olmalı)
+    client_max_body_size 30M;
 
     # Next.js uygulamasına yönlendir (3001 portu: PioneerCY ile çakışmasın)
     location / {
@@ -30,6 +30,11 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
+
+        # Çoklu fotoğraf yüklemeleri (proje/daire tipi galerileri) uzun sürebilir
+        proxy_connect_timeout 300s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
     }
 
     # Static dosyalar

@@ -102,10 +102,6 @@ export async function saveProject(formData: FormData) {
 
   const coverFile = formData.get("cover_image");
   const existingCoverUrl = formData.get("existing_cover_url")?.toString() || null;
-  const coverUrl =
-    coverFile instanceof File && coverFile.size > 0
-      ? await uploadImage(supabase, coverFile)
-      : existingCoverUrl;
 
   const existingGalleryRaw =
     formData.get("existing_gallery_urls")?.toString() || "[]";
@@ -113,9 +109,14 @@ export async function saveProject(formData: FormData) {
   const newGalleryFiles = formData
     .getAll("gallery_images")
     .filter((f): f is File => f instanceof File && f.size > 0);
-  const uploadedGallery = await Promise.all(
-    newGalleryFiles.map((file) => uploadImage(supabase, file))
-  );
+
+  // Upload cover + all gallery photos concurrently instead of one-by-one.
+  const [coverUrl, uploadedGallery] = await Promise.all([
+    coverFile instanceof File && coverFile.size > 0
+      ? uploadImage(supabase, coverFile)
+      : Promise.resolve(existingCoverUrl),
+    Promise.all(newGalleryFiles.map((file) => uploadImage(supabase, file))),
+  ]);
   const galleryImages = [...existingGallery, ...uploadedGallery];
 
   const projectPayload = {
@@ -198,75 +199,81 @@ async function saveUnits(
 
   const unitCount = Number(formData.get("unit_count")?.toString() || "0");
 
-  for (let i = 0; i < unitCount; i++) {
-    const prefix = `unit_${i}`;
-    const unitId = formData.get(`${prefix}_id`)?.toString() || null;
-    const name = formData.get(`${prefix}_name`)?.toString().trim() ?? "";
-    if (!name) continue;
+  // Process every unit (uploads + upsert) concurrently instead of one at a time.
+  await Promise.all(
+    Array.from({ length: unitCount }, (_, i) => saveUnit(supabase, projectId, formData, i))
+  );
+}
 
-    const roomConfig = formData.get(`${prefix}_room_config`)?.toString() || null;
-    const areaRaw = formData.get(`${prefix}_area_m2`)?.toString().trim();
-    const areaM2 = areaRaw ? Number(areaRaw) : null;
-    const bathroomRaw = formData
-      .get(`${prefix}_bathroom_count`)
-      ?.toString()
-      .trim();
-    const bathroomCount = bathroomRaw ? Number(bathroomRaw) : null;
-    const floorNo = formData.get(`${prefix}_floor_no`)?.toString().trim() || null;
-    const furnishing = formData.get(`${prefix}_furnishing`)?.toString() || null;
-    const priceRaw = formData.get(`${prefix}_price`)?.toString().trim();
-    const price = priceRaw ? Number(priceRaw) : null;
-    const priceCurrency =
-      price !== null
-        ? formData.get(`${prefix}_price_currency`)?.toString() || "GBP"
-        : null;
-    const sortOrderRaw = formData.get(`${prefix}_sort_order`)?.toString();
-    const sortOrder = sortOrderRaw ? Number(sortOrderRaw) : i;
+async function saveUnit(
+  supabase: SupabaseClient,
+  projectId: string,
+  formData: FormData,
+  i: number
+) {
+  const prefix = `unit_${i}`;
+  const unitId = formData.get(`${prefix}_id`)?.toString() || null;
+  const name = formData.get(`${prefix}_name`)?.toString().trim() ?? "";
+  if (!name) return;
 
-    const coverFile = formData.get(`${prefix}_cover_image`);
-    const existingCoverUrl =
-      formData.get(`${prefix}_existing_cover_url`)?.toString() || null;
-    const coverUrl =
-      coverFile instanceof File && coverFile.size > 0
-        ? await uploadImage(supabase, coverFile)
-        : existingCoverUrl;
+  const roomConfig = formData.get(`${prefix}_room_config`)?.toString() || null;
+  const areaRaw = formData.get(`${prefix}_area_m2`)?.toString().trim();
+  const areaM2 = areaRaw ? Number(areaRaw) : null;
+  const bathroomRaw = formData.get(`${prefix}_bathroom_count`)?.toString().trim();
+  const bathroomCount = bathroomRaw ? Number(bathroomRaw) : null;
+  const floorNo = formData.get(`${prefix}_floor_no`)?.toString().trim() || null;
+  const furnishing = formData.get(`${prefix}_furnishing`)?.toString() || null;
+  const priceRaw = formData.get(`${prefix}_price`)?.toString().trim();
+  const price = priceRaw ? Number(priceRaw) : null;
+  const priceCurrency =
+    price !== null
+      ? formData.get(`${prefix}_price_currency`)?.toString() || "GBP"
+      : null;
+  const sortOrderRaw = formData.get(`${prefix}_sort_order`)?.toString();
+  const sortOrder = sortOrderRaw ? Number(sortOrderRaw) : i;
 
-    const existingGalleryRaw =
-      formData.get(`${prefix}_existing_gallery_urls`)?.toString() || "[]";
-    const existingGallery: string[] = JSON.parse(existingGalleryRaw);
-    const newGalleryFiles = formData
-      .getAll(`${prefix}_gallery_images`)
-      .filter((f): f is File => f instanceof File && f.size > 0);
-    const uploadedGallery = await Promise.all(
-      newGalleryFiles.map((file) => uploadImage(supabase, file))
-    );
-    const galleryImages = [...existingGallery, ...uploadedGallery];
+  const coverFile = formData.get(`${prefix}_cover_image`);
+  const existingCoverUrl =
+    formData.get(`${prefix}_existing_cover_url`)?.toString() || null;
+  const existingGalleryRaw =
+    formData.get(`${prefix}_existing_gallery_urls`)?.toString() || "[]";
+  const existingGallery: string[] = JSON.parse(existingGalleryRaw);
+  const newGalleryFiles = formData
+    .getAll(`${prefix}_gallery_images`)
+    .filter((f): f is File => f instanceof File && f.size > 0);
 
-    const unitPayload = {
-      project_id: projectId,
-      name,
-      room_config: roomConfig,
-      area_m2: areaM2,
-      bathroom_count: bathroomCount,
-      floor_no: floorNo,
-      furnishing,
-      price,
-      price_currency: priceCurrency,
-      cover_image: coverUrl,
-      gallery_images: galleryImages,
-      sort_order: sortOrder,
-    };
+  const [coverUrl, uploadedGallery] = await Promise.all([
+    coverFile instanceof File && coverFile.size > 0
+      ? uploadImage(supabase, coverFile)
+      : Promise.resolve(existingCoverUrl),
+    Promise.all(newGalleryFiles.map((file) => uploadImage(supabase, file))),
+  ]);
+  const galleryImages = [...existingGallery, ...uploadedGallery];
 
-    if (unitId) {
-      const { error } = await supabase
-        .from("project_units")
-        .update(unitPayload)
-        .eq("id", unitId);
-      if (error) throw new Error(error.message);
-    } else {
-      const { error } = await supabase.from("project_units").insert(unitPayload);
-      if (error) throw new Error(error.message);
-    }
+  const unitPayload = {
+    project_id: projectId,
+    name,
+    room_config: roomConfig,
+    area_m2: areaM2,
+    bathroom_count: bathroomCount,
+    floor_no: floorNo,
+    furnishing,
+    price,
+    price_currency: priceCurrency,
+    cover_image: coverUrl,
+    gallery_images: galleryImages,
+    sort_order: sortOrder,
+  };
+
+  if (unitId) {
+    const { error } = await supabase
+      .from("project_units")
+      .update(unitPayload)
+      .eq("id", unitId);
+    if (error) throw new Error(error.message);
+  } else {
+    const { error } = await supabase.from("project_units").insert(unitPayload);
+    if (error) throw new Error(error.message);
   }
 }
 

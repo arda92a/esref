@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { compressImage, compressImages, toFileList } from "@/lib/image";
 import { saveProject } from "@/app/admin/projelerim/actions";
 import {
   FURNISHING_LABELS,
@@ -147,14 +148,22 @@ export default function ProjectForm({ project }: { project?: Project }) {
     propertyType === NONE ||
     HOUSING_PROPERTY_TYPES.includes(propertyType as PropertyType);
 
-  function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) setCoverPreview(URL.createObjectURL(file));
+  async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.target;
+    const file = input.files?.[0];
+    if (!file) return;
+    const compressed = await compressImage(file);
+    input.files = toFileList([compressed]);
+    setCoverPreview(URL.createObjectURL(compressed));
   }
 
-  function handleGalleryChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
-    setGalleryNewPreviews(files.map((file) => URL.createObjectURL(file)));
+  async function handleGalleryChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.target;
+    const files = Array.from(input.files ?? []);
+    if (files.length === 0) return;
+    const compressed = await compressImages(files);
+    input.files = toFileList(compressed);
+    setGalleryNewPreviews(compressed.map((file) => URL.createObjectURL(file)));
   }
 
   function removeExistingImage(url: string) {
@@ -179,21 +188,29 @@ export default function ProjectForm({ project }: { project?: Project }) {
     );
   }
 
-  function handleUnitCoverChange(
+  async function handleUnitCoverChange(
     index: number,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
-    const file = e.target.files?.[0];
-    if (file) updateUnit(index, { coverPreview: URL.createObjectURL(file) });
+    const input = e.target;
+    const file = input.files?.[0];
+    if (!file) return;
+    const compressed = await compressImage(file);
+    input.files = toFileList([compressed]);
+    updateUnit(index, { coverPreview: URL.createObjectURL(compressed) });
   }
 
-  function handleUnitGalleryChange(
+  async function handleUnitGalleryChange(
     index: number,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
-    const files = Array.from(e.target.files ?? []);
+    const input = e.target;
+    const files = Array.from(input.files ?? []);
+    if (files.length === 0) return;
+    const compressed = await compressImages(files);
+    input.files = toFileList(compressed);
     updateUnit(index, {
-      galleryNewPreviews: files.map((file) => URL.createObjectURL(file)),
+      galleryNewPreviews: compressed.map((file) => URL.createObjectURL(file)),
     });
   }
 
