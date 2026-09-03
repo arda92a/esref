@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
@@ -39,16 +39,31 @@ export default function ProjectGallery({
   // Mobile screens are narrower (fewer photos peek at once), so the continuous
   // "marquee" scroll already looks full starting at 3 photos there; desktop needs 4+.
   const useContinuousScroll = images.length >= (isMobile ? 3 : 4);
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: canLoop, align: "start", dragFree: true, containScroll: "trimSnaps" },
-    canLoop
-      ? [
-          useContinuousScroll
-            ? AutoScroll({ speed: 1, stopOnInteraction: false, stopOnMouseEnter: true })
-            : Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
-        ]
-      : []
+
+  // Memoized: Embla reInits (restarting the scroll animation) whenever options/plugins
+  // are a new reference, so recreating these inline on every render caused the
+  // continuous auto-scroll to keep resetting instead of gliding smoothly.
+  const options = useMemo(
+    () => ({
+      loop: canLoop,
+      align: "start" as const,
+      dragFree: true,
+      containScroll: "trimSnaps" as const,
+    }),
+    [canLoop]
   );
+  const plugins = useMemo(
+    () =>
+      canLoop
+        ? [
+            useContinuousScroll
+              ? AutoScroll({ speed: 1, stopOnInteraction: false, stopOnMouseEnter: true })
+              : Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
+          ]
+        : [],
+    [canLoop, useContinuousScroll]
+  );
+  const [emblaRef, emblaApi] = useEmblaCarousel(options, plugins);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
