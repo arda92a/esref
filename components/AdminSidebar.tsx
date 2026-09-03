@@ -11,7 +11,7 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex shrink-0 flex-col justify-between border-b bg-secondary/30 p-4 md:h-screen md:w-56 md:border-b-0 md:border-r md:p-6">
+    <aside className="flex shrink-0 flex-col justify-between border-b bg-secondary/30 p-4 md:sticky md:top-0 md:h-screen md:w-56 md:border-b-0 md:border-r md:p-6">
       <div>
         <div className="flex items-center gap-2 px-2 font-semibold">
           <Building2 className="size-5" />

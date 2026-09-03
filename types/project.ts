@@ -31,12 +31,14 @@ export interface ProjectUnit {
   room_config: RoomConfig | null;
   area_m2: number | null;
   bathroom_count: number | null;
-  floor_no: string | null;
+  unit_count: number | null;
   furnishing: Furnishing | null;
   price: number | null;
   price_currency: PriceCurrency | null;
   cover_image: string | null;
   gallery_images: string[];
+  /** Free-form tags the admin defines per unit type, e.g. "Ormana Bakan". */
+  features: string[];
   sort_order: number;
   created_at: string;
   updated_at: string;

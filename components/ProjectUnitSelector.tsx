@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Bath, BedDouble, Building2, Ruler, Sofa } from "lucide-react";
+import { Bath, BedDouble, Layers, Ruler, Sofa, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import ProjectGallery from "@/components/ProjectGallery";
@@ -86,13 +86,27 @@ export default function ProjectUnitSelector({
           {active.bathroom_count != null && (
             <SpecChip icon={Bath} label={`${active.bathroom_count} Banyo`} />
           )}
-          {active.floor_no && (
-            <SpecChip icon={Building2} label={`Kat: ${active.floor_no}`} />
+          {active.unit_count != null && (
+            <SpecChip icon={Layers} label={`${active.unit_count} Daire`} />
           )}
           {active.furnishing && (
             <SpecChip icon={Sofa} label={FURNISHING_LABELS[active.furnishing]} />
           )}
         </div>
+
+        {active.features.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {active.features.map((feature) => (
+              <span
+                key={feature}
+                className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand"
+              >
+                <Sparkles className="size-3.5" />
+                {feature}
+              </span>
+            ))}
+          </div>
+        )}
 
         {active.gallery_images.length > 0 && (
           <div className="mt-6">

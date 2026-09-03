@@ -95,7 +95,7 @@ export default function ProjectDetails({ project }: { project: Project }) {
   if (project.floor_count != null) {
     items.push({
       icon: Layers,
-      label: "Bina Kat Sayısı",
+      label: project.unit_mode === "coklu" ? "Bina Kat Sayısı" : "Kat Sayısı",
       value: String(project.floor_count),
     });
   }

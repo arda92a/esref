@@ -41,11 +41,12 @@ type UnitDraft = {
   defaultName: string;
   defaultAreaM2: string;
   defaultBathroomCount: string;
-  defaultFloorNo: string;
+  defaultUnitCount: string;
   defaultPrice: string;
   roomConfig: RoomConfig | typeof NONE;
   furnishing: Furnishing | typeof NONE;
   priceCurrency: PriceCurrency;
+  features: string[];
   existingCoverUrl: string | null;
   coverPreview: string | null;
   existingGalleryUrls: string[];
@@ -59,11 +60,12 @@ function unitToDraft(unit: ProjectUnit): UnitDraft {
     defaultName: unit.name,
     defaultAreaM2: unit.area_m2?.toString() ?? "",
     defaultBathroomCount: unit.bathroom_count?.toString() ?? "",
-    defaultFloorNo: unit.floor_no ?? "",
+    defaultUnitCount: unit.unit_count?.toString() ?? "",
     defaultPrice: unit.price?.toString() ?? "",
     roomConfig: unit.room_config ?? NONE,
     furnishing: unit.furnishing ?? NONE,
     priceCurrency: unit.price_currency ?? "GBP",
+    features: unit.features ?? [],
     existingCoverUrl: unit.cover_image,
     coverPreview: null,
     existingGalleryUrls: unit.gallery_images ?? [],
@@ -78,11 +80,12 @@ function emptyUnitDraft(defaultCurrency: PriceCurrency): UnitDraft {
     defaultName: "",
     defaultAreaM2: "",
     defaultBathroomCount: "",
-    defaultFloorNo: "",
+    defaultUnitCount: "",
     defaultPrice: "",
     roomConfig: NONE,
     furnishing: NONE,
     priceCurrency: defaultCurrency,
+    features: [],
     existingCoverUrl: null,
     coverPreview: null,
     existingGalleryUrls: [],
@@ -456,7 +459,7 @@ export default function ProjectForm({ project }: { project?: Project }) {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="floor_count">Bina Kat Sayısı</Label>
+              <Label htmlFor="floor_count">Kat Sayısı</Label>
               <Input
                 id="floor_count"
                 name="floor_count"
@@ -464,17 +467,7 @@ export default function ProjectForm({ project }: { project?: Project }) {
                 min={0}
                 step={1}
                 defaultValue={project?.floor_count ?? ""}
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="floor_no">Bulunduğu Kat</Label>
-              <Input
-                id="floor_no"
-                name="floor_no"
-                defaultValue={project?.floor_no ?? ""}
-                placeholder="Örn: 3, Zemin, Çatı Katı"
-                maxLength={30}
+                placeholder="Örn: 2"
               />
             </div>
 
@@ -514,30 +507,7 @@ export default function ProjectForm({ project }: { project?: Project }) {
             Bina Bilgileri
           </h3>
 
-          <input
-            type="hidden"
-            name="property_type"
-            value={propertyType === NONE ? "" : propertyType}
-          />
-          <div className="space-y-1.5">
-            <Label>Emlak Türü</Label>
-            <Select
-              value={propertyType}
-              onValueChange={(v) => setPropertyType(v as PropertyType)}
-            >
-              <SelectTrigger className="w-full sm:w-56">
-                <SelectValue placeholder="Seçilmedi" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NONE}>Seçilmedi</SelectItem>
-                {Object.entries(PROPERTY_TYPE_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <input type="hidden" name="property_type" value="daire" />
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
@@ -872,13 +842,15 @@ function UnitFieldset({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor={`${prefix}_floor_no`}>Bulunduğu Kat</Label>
+          <Label htmlFor={`${prefix}_unit_count`}>Tipten Toplam Daire Adedi</Label>
           <Input
-            id={`${prefix}_floor_no`}
-            name={`${prefix}_floor_no`}
-            defaultValue={unit.defaultFloorNo}
-            placeholder="Örn: 3, Zemin, Çatı Katı"
-            maxLength={30}
+            id={`${prefix}_unit_count`}
+            name={`${prefix}_unit_count`}
+            type="number"
+            min={0}
+            step={1}
+            defaultValue={unit.defaultUnitCount}
+            placeholder="Örn: 8"
           />
         </div>
 
@@ -953,6 +925,12 @@ function UnitFieldset({
         )}
       </div>
 
+      <FeatureTagsEditor
+        prefix={prefix}
+        features={unit.features}
+        onChange={(features) => onChange({ features })}
+      />
+
       <div className="space-y-1.5">
         <Label htmlFor={`${prefix}_gallery_images`}>Tip Galerisi</Label>
         <Input
@@ -1003,6 +981,82 @@ function UnitFieldset({
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function FeatureTagsEditor({
+  prefix,
+  features,
+  onChange,
+}: {
+  prefix: string;
+  features: string[];
+  onChange: (features: string[]) => void;
+}) {
+  const [draft, setDraft] = useState("");
+
+  function addFeature() {
+    const value = draft.trim();
+    if (!value || features.includes(value)) {
+      setDraft("");
+      return;
+    }
+    onChange([...features, value]);
+    setDraft("");
+  }
+
+  function removeFeature(value: string) {
+    onChange(features.filter((f) => f !== value));
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <input
+        type="hidden"
+        name={`${prefix}_features`}
+        value={JSON.stringify(features)}
+      />
+      <Label htmlFor={`${prefix}_feature_input`}>Özellikler</Label>
+      <div className="flex gap-2">
+        <Input
+          id={`${prefix}_feature_input`}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              addFeature();
+            }
+          }}
+          placeholder="Örn: Ormana Bakan"
+          maxLength={40}
+        />
+        <Button type="button" variant="outline" onClick={addFeature}>
+          <Plus className="size-4" />
+          Ekle
+        </Button>
+      </div>
+      {features.length > 0 && (
+        <div className="flex flex-wrap gap-2 pt-1">
+          {features.map((feature) => (
+            <span
+              key={feature}
+              className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 px-3 py-1 text-xs font-medium"
+            >
+              {feature}
+              <button
+                type="button"
+                onClick={() => removeFeature(feature)}
+                aria-label={`${feature} özelliğini kaldır`}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <X className="size-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

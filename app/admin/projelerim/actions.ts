@@ -221,7 +221,8 @@ async function saveUnit(
   const areaM2 = areaRaw ? Number(areaRaw) : null;
   const bathroomRaw = formData.get(`${prefix}_bathroom_count`)?.toString().trim();
   const bathroomCount = bathroomRaw ? Number(bathroomRaw) : null;
-  const floorNo = formData.get(`${prefix}_floor_no`)?.toString().trim() || null;
+  const unitCountRaw = formData.get(`${prefix}_unit_count`)?.toString().trim();
+  const unitCount = unitCountRaw ? Number(unitCountRaw) : null;
   const furnishing = formData.get(`${prefix}_furnishing`)?.toString() || null;
   const priceRaw = formData.get(`${prefix}_price`)?.toString().trim();
   const price = priceRaw ? Number(priceRaw) : null;
@@ -231,6 +232,8 @@ async function saveUnit(
       : null;
   const sortOrderRaw = formData.get(`${prefix}_sort_order`)?.toString();
   const sortOrder = sortOrderRaw ? Number(sortOrderRaw) : i;
+  const featuresRaw = formData.get(`${prefix}_features`)?.toString() || "[]";
+  const features: string[] = JSON.parse(featuresRaw);
 
   const coverFile = formData.get(`${prefix}_cover_image`);
   const existingCoverUrl =
@@ -256,12 +259,13 @@ async function saveUnit(
     room_config: roomConfig,
     area_m2: areaM2,
     bathroom_count: bathroomCount,
-    floor_no: floorNo,
+    unit_count: unitCount,
     furnishing,
     price,
     price_currency: priceCurrency,
     cover_image: coverUrl,
     gallery_images: galleryImages,
+    features,
     sort_order: sortOrder,
   };
 
