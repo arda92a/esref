@@ -4,10 +4,27 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
+import AutoScroll from "embla-carousel-auto-scroll";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+
+function useIsMobile(breakpoint = 640) {
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < breakpoint
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+    const onChange = () => setIsMobile(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [breakpoint]);
+
+  return isMobile;
+}
 
 export default function ProjectGallery({
   images,
@@ -17,11 +34,19 @@ export default function ProjectGallery({
   title: string;
 }) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const isMobile = useIsMobile();
   const canLoop = images.length > 1;
+  // Mobile screens are narrower (fewer photos peek at once), so the continuous
+  // "marquee" scroll already looks full starting at 3 photos there; desktop needs 4+.
+  const useContinuousScroll = images.length >= (isMobile ? 3 : 4);
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: canLoop, align: "start", dragFree: true, containScroll: "trimSnaps" },
     canLoop
-      ? [Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true })]
+      ? [
+          useContinuousScroll
+            ? AutoScroll({ speed: 1, stopOnInteraction: false, stopOnMouseEnter: true })
+            : Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }),
+        ]
       : []
   );
 
