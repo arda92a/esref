@@ -1,7 +1,14 @@
+import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import NewUserForm from "./NewUserForm";
+import DeleteUserButton from "./DeleteUserButton";
 
 export default async function KullanicilarPage() {
+  const supabase = await createClient();
+  const {
+    data: { user: currentUser },
+  } = await supabase.auth.getUser();
+
   let users: { id: string; email: string | null; created_at: string }[] = [];
   let listError: string | null = null;
   try {
@@ -40,10 +47,15 @@ export default async function KullanicilarPage() {
           <div className="divide-y rounded-lg border">
             {users.map((u) => (
               <div key={u.id} className="flex items-center justify-between px-4 py-3">
-                <span className="text-sm font-medium">{u.email}</span>
-                <span className="text-xs text-muted-foreground">
-                  {new Date(u.created_at).toLocaleDateString("tr-TR")}
-                </span>
+                <div>
+                  <span className="text-sm font-medium">{u.email}</span>
+                  <span className="ml-3 text-xs text-muted-foreground">
+                    {new Date(u.created_at).toLocaleDateString("tr-TR")}
+                  </span>
+                </div>
+                {u.id !== currentUser?.id && (
+                  <DeleteUserButton id={u.id} email={u.email} />
+                )}
               </div>
             ))}
           </div>

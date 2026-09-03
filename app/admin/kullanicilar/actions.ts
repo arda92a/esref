@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -42,5 +44,27 @@ export async function createAdminUser(
     return { error: error.message };
   }
 
+  revalidatePath("/admin/kullanicilar");
   return { success: `${email} kullanıcısı oluşturuldu.` };
+}
+
+export async function deleteAdminUser(userId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("Bu işlem için giriş yapmanız gerekiyor.");
+  }
+  if (user.id === userId) {
+    throw new Error("Kendi hesabınızı silemezsiniz.");
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin.auth.admin.deleteUser(userId);
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin/kullanicilar");
 }
