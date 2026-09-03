@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import { useFormStatus } from "react-dom";
+import { Loader2, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -703,10 +704,37 @@ export default function ProjectForm({ project }: { project?: Project }) {
         </div>
       )}
 
-      <Button type="submit">
-        {project ? "Değişiklikleri Kaydet" : "Projeyi Ekle"}
-      </Button>
+      <SubmitButton isEdit={Boolean(project)} />
+      <FormPendingOverlay />
     </form>
+  );
+}
+
+function SubmitButton({ isEdit }: { isEdit: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending && <Loader2 className="size-4 animate-spin" />}
+      {pending
+        ? "Kaydediliyor..."
+        : isEdit
+          ? "Değişiklikleri Kaydet"
+          : "Projeyi Ekle"}
+    </Button>
+  );
+}
+
+function FormPendingOverlay() {
+  const { pending } = useFormStatus();
+  if (!pending) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-sm">
+      <Loader2 className="size-8 animate-spin text-brand" />
+      <p className="text-sm font-medium text-muted-foreground">
+        Proje kaydediliyor, lütfen bekleyin...
+      </p>
+    </div>
   );
 }
 

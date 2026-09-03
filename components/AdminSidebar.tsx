@@ -29,6 +29,17 @@ export default function AdminSidebar() {
           >
             Projelerim
           </Link>
+          <Link
+            href="/admin/kullanicilar"
+            className={cn(
+              "block rounded-md px-2 py-2 text-sm font-medium transition-colors",
+              pathname.startsWith("/admin/kullanicilar")
+                ? "bg-background shadow-sm"
+                : "text-muted-foreground hover:bg-background/60"
+            )}
+          >
+            Kullanıcılar
+          </Link>
         </nav>
       </div>
 
