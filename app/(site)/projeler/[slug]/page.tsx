@@ -6,6 +6,7 @@ import { MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import ProjectGallery from "@/components/ProjectGallery";
 import ProjectDetails from "@/components/ProjectDetails";
+import ProjectUnitSelector from "@/components/ProjectUnitSelector";
 import { getProjectBySlug } from "@/lib/supabase/queries";
 
 export const revalidate = 60;
@@ -63,6 +64,12 @@ export default async function ProjectDetailPage({ params }: Props) {
         </p>
       )}
 
+      {project.site_name && (
+        <p className="mt-3 inline-flex items-center rounded-full border border-brand/20 bg-brand/5 px-3 py-1.5 text-sm font-medium text-brand">
+          Bu proje {project.site_name} içerisinde yer almaktadır.
+        </p>
+      )}
+
       {project.description && (
         <p className="mt-6 whitespace-pre-line text-muted-foreground">
           {project.description}
@@ -71,9 +78,15 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       <ProjectDetails project={project} />
 
+      {project.unit_mode === "coklu" && project.project_units && (
+        <ProjectUnitSelector units={project.project_units} title={project.title} />
+      )}
+
       {project.gallery_images.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-lg font-semibold">Galeri</h2>
+          <h2 className="text-lg font-semibold">
+            {project.unit_mode === "coklu" ? "Genel Galeri" : "Galeri"}
+          </h2>
           <div className="mt-4">
             <ProjectGallery images={project.gallery_images} title={project.title} />
           </div>

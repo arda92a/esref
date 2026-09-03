@@ -15,11 +15,16 @@ export default async function EditProjectPage({
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("projects")
-    .select("*")
+    .select("*, project_units(*)")
     .eq("id", id)
     .maybeSingle();
 
   if (error || !data) notFound();
+
+  const project = data as Project;
+  if (project.project_units) {
+    project.project_units.sort((a, b) => a.sort_order - b.sort_order);
+  }
 
   return (
     <div>
@@ -27,7 +32,7 @@ export default async function EditProjectPage({
         Projeyi Düzenle
       </h1>
       <div className="mt-6">
-        <ProjectForm project={data as Project} />
+        <ProjectForm project={project} />
       </div>
     </div>
   );

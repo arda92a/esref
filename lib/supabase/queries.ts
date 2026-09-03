@@ -1,12 +1,23 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Project } from "@/types/project";
 
+const PROJECT_SELECT = "*, project_units(*)";
+
+function sortUnits(project: Project): Project {
+  if (project.project_units?.length) {
+    project.project_units = [...project.project_units].sort(
+      (a, b) => a.sort_order - b.sort_order
+    );
+  }
+  return project;
+}
+
 export async function getProjects(): Promise<Project[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("projects")
-    .select("*")
+    .select(PROJECT_SELECT)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
@@ -15,7 +26,7 @@ export async function getProjects(): Promise<Project[]> {
     return [];
   }
 
-  return data as Project[];
+  return (data as Project[]).map(sortUnits);
 }
 
 export async function getProjectBySlug(
@@ -25,7 +36,7 @@ export async function getProjectBySlug(
 
   const { data, error } = await supabase
     .from("projects")
-    .select("*")
+    .select(PROJECT_SELECT)
     .eq("slug", slug)
     .maybeSingle();
 
@@ -34,5 +45,5 @@ export async function getProjectBySlug(
     return null;
   }
 
-  return data as Project | null;
+  return data ? sortUnits(data as Project) : null;
 }

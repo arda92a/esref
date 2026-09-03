@@ -46,6 +46,11 @@ export default async function AdminProjectsPage() {
                       ? "Tamamlandı"
                       : "Devam Ediyor"}
                   </Badge>
+                  {project.unit_mode === "coklu" && (
+                    <Badge variant="outline">
+                      Apartman · {project.project_units?.length ?? 0} Daire Tipi
+                    </Badge>
+                  )}
                   {project.location && <span>{project.location}</span>}
                 </div>
               </div>
