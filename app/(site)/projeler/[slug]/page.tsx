@@ -76,12 +76,6 @@ export default async function ProjectDetailPage({ params }: Props) {
         </p>
       )}
 
-      <ProjectDetails project={project} />
-
-      {project.unit_mode === "coklu" && project.project_units && (
-        <ProjectUnitSelector units={project.project_units} title={project.title} />
-      )}
-
       {project.gallery_images.length > 0 && (
         <div className="mt-10">
           <h2 className="text-lg font-semibold">
@@ -91,6 +85,12 @@ export default async function ProjectDetailPage({ params }: Props) {
             <ProjectGallery images={project.gallery_images} title={project.title} />
           </div>
         </div>
+      )}
+
+      <ProjectDetails project={project} />
+
+      {project.unit_mode === "coklu" && project.project_units && (
+        <ProjectUnitSelector units={project.project_units} title={project.title} />
       )}
     </article>
   );
