@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MapPin, Phone } from "lucide-react";
 
 import FacebookIcon from "@/components/icons/FacebookIcon";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 import { siteConfig, navLinks } from "@/lib/site-config";
 
 export default function Footer() {
@@ -72,8 +73,21 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t py-4 text-center text-xs text-muted-foreground">
-        © {year} {siteConfig.name}. Tüm hakları saklıdır.
+      <div className="border-t py-4">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:px-6">
+          <p>
+            © {year} {siteConfig.name}. Tüm hakları saklıdır.
+          </p>
+          <a
+            href="https://wa.me/905338550905"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <WhatsAppIcon className="size-3.5 text-[#25D366]" />
+            Site: Arda Öztüner
+          </a>
+        </div>
       </div>
     </footer>
   );
