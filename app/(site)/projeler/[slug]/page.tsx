@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { MapPin, ExternalLink } from "lucide-react";
+import { MapPin } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import ProjectGallery from "@/components/ProjectGallery";
@@ -120,17 +120,6 @@ export default async function ProjectDetailPage({ params }: Props) {
               loading="lazy"
               title={`${project.title} konumu`}
             />
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                project.location
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border bg-background/90 px-3 py-1.5 text-xs font-medium shadow-sm backdrop-blur transition-colors hover:bg-background"
-            >
-              <ExternalLink className="size-3.5" />
-              Haritada Aç
-            </a>
           </div>
         </div>
       )}
