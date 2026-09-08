@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { MapPin } from "lucide-react";
+import { MapPin, ExternalLink } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import ProjectGallery from "@/components/ProjectGallery";
@@ -92,7 +92,7 @@ export default async function ProjectDetailPage({ params }: Props) {
       {project.location && (
         <div className="mt-10">
           <h2 className="text-lg font-semibold">Konum</h2>
-          <div className="mt-4 aspect-video w-full overflow-hidden rounded-lg border">
+          <div className="relative mt-4 h-56 w-full overflow-hidden rounded-lg border sm:h-72">
             <iframe
               src={`https://www.google.com/maps?q=${encodeURIComponent(
                 project.location
@@ -101,17 +101,18 @@ export default async function ProjectDetailPage({ params }: Props) {
               loading="lazy"
               title={`${project.title} konumu`}
             />
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                project.location
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border bg-background/90 px-3 py-1.5 text-xs font-medium shadow-sm backdrop-blur transition-colors hover:bg-background"
+            >
+              <ExternalLink className="size-3.5" />
+              Haritada Aç
+            </a>
           </div>
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-              project.location
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-block text-sm text-muted-foreground hover:underline"
-          >
-            Haritada Aç
-          </a>
         </div>
       )}
 
