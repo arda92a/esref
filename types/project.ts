@@ -4,9 +4,9 @@ export type PropertyType =
   | "daire"
   | "villa"
   | "mustakil-ev"
-  | "ticari"
-  | "arsa"
-  | "ofis";
+  | "ofis"
+  | "depo"
+  | "atolye";
 
 export type PriceCurrency = "TRY" | "USD" | "GBP";
 
@@ -86,9 +86,9 @@ export const PROPERTY_TYPE_LABELS: Record<PropertyType, string> = {
   daire: "Daire",
   villa: "Villa",
   "mustakil-ev": "Müstakil Ev",
-  ticari: "Ticari",
-  arsa: "Arsa",
   ofis: "Ofis",
+  depo: "Depo",
+  atolye: "Atölye",
 };
 
 export const ROOM_CONFIG_LABELS: Record<RoomConfig, string> = {
