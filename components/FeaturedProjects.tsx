@@ -16,6 +16,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -28,8 +29,12 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
     if (!emblaApi) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- standard embla init pattern
     onSelect();
+    setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
+    emblaApi.on("reInit", () => {
+      onSelect();
+      setScrollSnaps(emblaApi.scrollSnapList());
+    });
   }, [emblaApi, onSelect]);
 
   if (projects.length === 0) return null;
@@ -61,9 +66,9 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
         </button>
 
         <div className="flex items-center gap-1.5">
-          {projects.map((project, i) => (
+          {scrollSnaps.map((_, i) => (
             <button
-              key={project.id}
+              key={i}
               type="button"
               aria-label={`${i + 1}. slayda git`}
               onClick={() => emblaApi?.scrollTo(i)}
