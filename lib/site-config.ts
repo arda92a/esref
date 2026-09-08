@@ -2,8 +2,19 @@ const address = "65. Atatürk Cad., Alayköy, Kuzey Kıbrıs";
 
 export const siteConfig = {
   name: "Tanrıkulu Construction",
+  siteUrl: "https://tanrikuluconstruction.com",
   description:
     "2008 yılından bu yana Alayköy merkezli, kalite, güvenilirlik ve müşteri memnuniyeti odaklı inşaat ve anahtar teslim projeler.",
+  keywords: [
+    "Tanrıkulu Construction",
+    "Tanrıkulu İnşaat",
+    "Alayköy inşaat",
+    "Alayköy yapı",
+    "Kuzey Kıbrıs inşaat",
+    "KKTC inşaat firması",
+    "anahtar teslim inşaat",
+    "müteahhitlik",
+  ],
   phone: "+90 548 834 56 68",
   phoneHref: "+905488345668",
   email: "esreftanrikulu@gmail.com",

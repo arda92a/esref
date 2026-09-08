@@ -7,6 +7,8 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "İletişim",
+  description:
+    "Tanrıkulu Construction ile Alayköy, Kuzey Kıbrıs adresimizden veya telefon/e-posta ile iletişime geçin.",
 };
 
 export default function ContactPage() {

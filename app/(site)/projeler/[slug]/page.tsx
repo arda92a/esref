@@ -21,7 +21,22 @@ export async function generateMetadata({
 }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
-  return { title: project?.title ?? "Proje" };
+  if (!project) return { title: "Proje" };
+
+  const description =
+    project.description?.slice(0, 160) ??
+    `${project.title}${project.location ? ` - ${project.location}` : ""}`;
+
+  return {
+    title: project.title,
+    description,
+    alternates: { canonical: `/projeler/${project.slug}` },
+    openGraph: {
+      title: project.title,
+      description,
+      images: project.cover_image ? [{ url: project.cover_image }] : undefined,
+    },
+  };
 }
 
 export default async function ProjectDetailPage({ params }: Props) {

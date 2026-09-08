@@ -6,6 +6,8 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Hakkımızda",
+  description:
+    "Tanrıkulu Construction, 2008'den bu yana Alayköy merkezli, kalite ve güvenilirlik odaklı inşaat ve müteahhitlik hizmeti veriyor.",
 };
 
 export default function AboutPage() {

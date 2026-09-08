@@ -5,6 +5,8 @@ import { getProjects } from "@/lib/supabase/queries";
 
 export const metadata: Metadata = {
   title: "Projeler",
+  description:
+    "Tanrıkulu Construction'ın Alayköy ve çevresinde devam eden ve tamamlanan inşaat projelerini inceleyin.",
 };
 
 export const revalidate = 60;
