@@ -89,6 +89,32 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       <ProjectDetails project={project} />
 
+      {project.location && (
+        <div className="mt-10">
+          <h2 className="text-lg font-semibold">Konum</h2>
+          <div className="mt-4 aspect-video w-full overflow-hidden rounded-lg border">
+            <iframe
+              src={`https://www.google.com/maps?q=${encodeURIComponent(
+                project.location
+              )}&output=embed`}
+              className="h-full w-full"
+              loading="lazy"
+              title={`${project.title} konumu`}
+            />
+          </div>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+              project.location
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-block text-sm text-muted-foreground hover:underline"
+          >
+            Haritada Aç
+          </a>
+        </div>
+      )}
+
       {project.unit_mode === "coklu" && project.project_units && (
         <ProjectUnitSelector units={project.project_units} title={project.title} />
       )}
