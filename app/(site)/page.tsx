@@ -71,7 +71,7 @@ export default async function Home() {
         />
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-black/75 via-black/55 to-black/70"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-black/55 via-black/35 to-black/50"
         />
 
         <section className="relative">
