@@ -20,7 +20,7 @@ export const siteConfig = {
   email: "esreftanrikulu@gmail.com",
   address,
   facebookUrl: "https://www.facebook.com/tanrikuluconstruction/",
-  mapsEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`,
+  mapsEmbedUrl: "https://www.google.com/maps?q=35.188049,33.262323&output=embed",
   mapsUrl: "https://maps.app.goo.gl/b2AeSAWwFx79skT1A",
   foundedYear: 2008,
   vision:
