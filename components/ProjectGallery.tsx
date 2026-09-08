@@ -74,22 +74,26 @@ export default function ProjectGallery({
     <>
       <div className="group/gallery relative">
         <div className="overflow-hidden rounded-xl" ref={emblaRef}>
-          <div className="flex gap-3">
+          <div className="flex -ml-3">
             {images.map((src, i) => (
-              <button
+              <div
                 key={src}
-                type="button"
-                onClick={() => setSelectedIndex(i)}
-                className="relative aspect-[4/3] w-[68%] shrink-0 grow-0 basis-[68%] cursor-grab overflow-hidden rounded-xl bg-muted active:cursor-grabbing sm:w-[42%] sm:basis-[42%] md:w-[31%] md:basis-[31%]"
+                className="shrink-0 grow-0 basis-[68%] pl-3 sm:basis-[42%] md:basis-[31%]"
               >
-                <Image
-                  src={src}
-                  alt={`${title} - fotoğraf ${i + 1}`}
-                  fill
-                  sizes="(min-width: 768px) 31vw, (min-width: 640px) 42vw, 68vw"
-                  className="object-cover transition-transform duration-300 hover:scale-105"
-                />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedIndex(i)}
+                  className="relative aspect-[4/3] w-full cursor-grab overflow-hidden rounded-xl bg-muted active:cursor-grabbing"
+                >
+                  <Image
+                    src={src}
+                    alt={`${title} - fotoğraf ${i + 1}`}
+                    fill
+                    sizes="(min-width: 768px) 31vw, (min-width: 640px) 42vw, 68vw"
+                    className="object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </button>
+              </div>
             ))}
           </div>
         </div>
