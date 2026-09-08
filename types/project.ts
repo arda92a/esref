@@ -17,7 +17,9 @@ export type RoomConfig =
   | "3+1"
   | "4+1"
   | "5+1"
-  | "6+1-uzeri";
+  | "6+1-uzeri"
+  | "dukkan"
+  | "ofis";
 
 export type Furnishing = "esyali" | "esyasiz" | "yari-esyali";
 
@@ -97,6 +99,8 @@ export const ROOM_CONFIG_LABELS: Record<RoomConfig, string> = {
   "4+1": "4+1",
   "5+1": "5+1",
   "6+1-uzeri": "6+1 ve üzeri",
+  dukkan: "Dükkan",
+  ofis: "Ofis",
 };
 
 export const FURNISHING_LABELS: Record<Furnishing, string> = {
