@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import ProjectGallery from "@/components/ProjectGallery";
 import ProjectDetails from "@/components/ProjectDetails";
 import ProjectUnitSelector from "@/components/ProjectUnitSelector";
+import ShareButton from "@/components/ShareButton";
 import { getProjectBySlug } from "@/lib/supabase/queries";
 
 export const revalidate = 60;
@@ -48,13 +49,16 @@ export default async function ProjectDetailPage({ params }: Props) {
         )}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          {project.title}
-        </h1>
-        <Badge variant={project.status === "tamamlandi" ? "secondary" : "default"}>
-          {project.status === "tamamlandi" ? "Tamamlandı" : "Devam Ediyor"}
-        </Badge>
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            {project.title}
+          </h1>
+          <Badge variant={project.status === "tamamlandi" ? "secondary" : "default"}>
+            {project.status === "tamamlandi" ? "Tamamlandı" : "Devam Ediyor"}
+          </Badge>
+        </div>
+        <ShareButton title={project.title} />
       </div>
 
       {project.location && (
