@@ -124,7 +124,7 @@ export default function ProjectGallery({
         open={selectedIndex !== null}
         onOpenChange={(open) => !open && setSelectedIndex(null)}
       >
-        <DialogContent className="max-w-3xl p-2">
+        <DialogContent className="max-w-[95vw] w-full p-2 sm:max-w-5xl lg:max-w-6xl">
           <DialogTitle className="sr-only">{title} galerisi</DialogTitle>
           {selectedIndex !== null && (
             <GalleryLightbox images={images} title={title} startIndex={selectedIndex} />
@@ -166,7 +166,7 @@ function GalleryLightbox({
           {images.map((src, i) => (
             <div
               key={src}
-              className="relative aspect-video w-full shrink-0 grow-0 basis-full"
+              className="relative aspect-[3/2] min-h-[60vh] w-full shrink-0 grow-0 basis-full"
             >
               <Image
                 src={src}

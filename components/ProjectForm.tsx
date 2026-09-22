@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { compressImage, compressImages, toFileList } from "@/lib/image";
+import SortableGallery from "@/components/SortableGallery";
 import { saveProject } from "@/app/admin/projelerim/actions";
 import {
   FURNISHING_LABELS,
@@ -623,43 +624,12 @@ export default function ProjectForm({ project }: { project?: Project }) {
           onChange={handleGalleryChange}
         />
 
-        {(galleryExisting.length > 0 || galleryNewPreviews.length > 0) && (
-          <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
-            {galleryExisting.map((url) => (
-              <div
-                key={url}
-                className="group relative aspect-square overflow-hidden rounded-md border"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={url}
-                  alt="Galeri fotoğrafı"
-                  className="h-full w-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeExistingImage(url)}
-                  className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <X className="size-3.5" />
-                </button>
-              </div>
-            ))}
-            {galleryNewPreviews.map((url) => (
-              <div
-                key={url}
-                className="relative aspect-square overflow-hidden rounded-md border ring-2 ring-primary/40"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={url}
-                  alt="Yeni galeri fotoğrafı"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        )}
+        <SortableGallery
+          existingUrls={galleryExisting}
+          newPreviewUrls={galleryNewPreviews}
+          onReorderExisting={setGalleryExisting}
+          onRemoveExisting={removeExistingImage}
+        />
       </div>
 
       {unitMode === "coklu" && (
@@ -696,6 +666,9 @@ export default function ProjectForm({ project }: { project?: Project }) {
                   onGalleryChange={(e) => handleUnitGalleryChange(index, e)}
                   onRemoveExistingImage={(url) =>
                     removeUnitExistingImage(index, url)
+                  }
+                  onReorderExistingGallery={(reordered) =>
+                    updateUnit(index, { existingGalleryUrls: reordered })
                   }
                 />
               ))}
@@ -746,6 +719,7 @@ function UnitFieldset({
   onCoverChange,
   onGalleryChange,
   onRemoveExistingImage,
+  onReorderExistingGallery,
 }: {
   index: number;
   unit: UnitDraft;
@@ -754,6 +728,7 @@ function UnitFieldset({
   onCoverChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onGalleryChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveExistingImage: (url: string) => void;
+  onReorderExistingGallery: (reordered: string[]) => void;
 }) {
   const prefix = `unit_${index}`;
 
@@ -970,44 +945,14 @@ function UnitFieldset({
           onChange={onGalleryChange}
         />
 
-        {(unit.existingGalleryUrls.length > 0 ||
-          unit.galleryNewPreviews.length > 0) && (
-          <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
-            {unit.existingGalleryUrls.map((url) => (
-              <div
-                key={url}
-                className="group relative aspect-square overflow-hidden rounded-md border"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={url}
-                  alt="Tip galeri fotoğrafı"
-                  className="h-full w-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => onRemoveExistingImage(url)}
-                  className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <X className="size-3.5" />
-                </button>
-              </div>
-            ))}
-            {unit.galleryNewPreviews.map((url) => (
-              <div
-                key={url}
-                className="relative aspect-square overflow-hidden rounded-md border ring-2 ring-primary/40"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={url}
-                  alt="Yeni tip galeri fotoğrafı"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        )}
+        <SortableGallery
+          existingUrls={unit.existingGalleryUrls}
+          newPreviewUrls={unit.galleryNewPreviews}
+          onReorderExisting={(reordered) =>
+            onReorderExistingGallery(reordered)
+          }
+          onRemoveExisting={(url) => onRemoveExistingImage(url)}
+        />
       </div>
     </div>
   );
