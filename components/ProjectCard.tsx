@@ -93,11 +93,14 @@ export default function ProjectCard({ project }: { project: Project }) {
             </Badge>
           ) : null}
         </div>
-        {(project.location || project.area_m2 != null) && (
+        {(project.region || project.location || project.area_m2 != null) && (
           <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
             <MapPin className="size-3.5 shrink-0" />
             <span className="truncate">
-              {[project.location, project.area_m2 != null ? `${project.area_m2} m²` : null]
+              {[
+                project.region || project.location,
+                project.area_m2 != null ? `${project.area_m2} m²` : null,
+              ]
                 .filter(Boolean)
                 .join(" · ")}
             </span>

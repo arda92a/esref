@@ -52,6 +52,7 @@ export interface Project {
   slug: string;
   description: string | null;
   location: string | null;
+  region: string | null;
   status: ProjectStatus;
   cover_image: string | null;
   gallery_images: string[];

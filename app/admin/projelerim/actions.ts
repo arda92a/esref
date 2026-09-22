@@ -51,6 +51,7 @@ export async function saveProject(formData: FormData) {
   const title = formData.get("title")?.toString().trim() ?? "";
   const description = formData.get("description")?.toString().trim() || null;
   const location = formData.get("location")?.toString().trim() || null;
+  const region = formData.get("region")?.toString().trim() || "Lefkoşa, Alayköy";
   const status =
     formData.get("status")?.toString() === "tamamlandi"
       ? "tamamlandi"
@@ -125,6 +126,7 @@ export async function saveProject(formData: FormData) {
     title,
     description,
     location,
+    region,
     status,
     is_featured: isFeatured,
     cover_image: coverUrl,

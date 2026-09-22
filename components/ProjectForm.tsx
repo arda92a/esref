@@ -265,13 +265,31 @@ export default function ProjectForm({ project }: { project?: Project }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="location">Konum</Label>
+        <Label htmlFor="region">Bölge</Label>
+        <Input
+          id="region"
+          name="region"
+          defaultValue={project?.region ?? "Lefkoşa, Alayköy"}
+          maxLength={150}
+          placeholder="Örn: Lefkoşa, Alayköy"
+        />
+        <p className="text-xs text-muted-foreground">
+          Projelerde ve detay sayfasında kullanıcılara gösterilecek bölge adı.
+        </p>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="location">Konum (Google Maps / Koordinat)</Label>
         <Input
           id="location"
           name="location"
           defaultValue={project?.location ?? ""}
           maxLength={150}
+          placeholder="Örn: 35.1856, 33.3823 veya tam adres"
         />
+        <p className="text-xs text-muted-foreground">
+          Google Maps harita iframe&apos;inde kullanılacak koordinat veya adres.
+        </p>
       </div>
 
       <div className="space-y-1.5">

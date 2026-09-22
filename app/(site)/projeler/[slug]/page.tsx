@@ -23,9 +23,10 @@ export async function generateMetadata({
   const project = await getProjectBySlug(slug);
   if (!project) return { title: "Proje" };
 
+  const displayLocation = project.region || project.location;
   const description =
     project.description?.slice(0, 160) ??
-    `${project.title}${project.location ? ` - ${project.location}` : ""}`;
+    `${project.title}${displayLocation ? ` - ${displayLocation}` : ""}`;
 
   return {
     title: project.title,
@@ -76,10 +77,10 @@ export default async function ProjectDetailPage({ params }: Props) {
         <ShareButton title={project.title} />
       </div>
 
-      {project.location && (
+      {(project.region || project.location) && (
         <p className="mt-2 flex items-center gap-1.5 text-muted-foreground">
           <MapPin className="size-4 shrink-0" />
-          {project.location}
+          {project.region || project.location}
         </p>
       )}
 
