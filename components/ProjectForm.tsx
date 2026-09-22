@@ -301,6 +301,24 @@ export default function ProjectForm({ project }: { project?: Project }) {
       </div>
 
       <div className="space-y-1.5">
+        <label className="flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-colors has-[:checked]:border-brand has-[:checked]:bg-brand/5">
+          <input
+            type="checkbox"
+            name="is_featured"
+            value="true"
+            defaultChecked={project?.is_featured}
+            className="size-4 accent-primary"
+          />
+          <div>
+            <span className="text-sm font-medium">⭐ Ana Sayfada Öne Çıkart</span>
+            <p className="text-xs text-muted-foreground">
+              Bu proje ana sayfadaki &quot;Öne Çıkan Projeler&quot; bölümünde gösterilir.
+            </p>
+          </div>
+        </label>
+      </div>
+
+      <div className="space-y-1.5">
         <Label>Proje Yapısı</Label>
         <div className="grid grid-cols-1 gap-2 rounded-lg border bg-muted/30 p-1 sm:grid-cols-2">
           {(Object.entries(UNIT_MODE_LABELS) as [UnitMode, string][]).map(

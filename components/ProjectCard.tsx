@@ -4,7 +4,11 @@ import { MapPin } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
-import { ROOM_CONFIG_LABELS, type Project } from "@/types/project";
+import {
+  PROPERTY_TYPE_LABELS,
+  ROOM_CONFIG_LABELS,
+  type Project,
+} from "@/types/project";
 
 /** Derives a single price label for the card overlay. */
 function getCardPriceLabel(project: Project): string | null {
@@ -79,11 +83,15 @@ export default function ProjectCard({ project }: { project: Project }) {
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold">{project.title}</h3>
-          {isMultiUnit && (
+          {isMultiUnit ? (
             <Badge variant="outline" className="shrink-0">
               Apartman
             </Badge>
-          )}
+          ) : project.property_type && PROPERTY_TYPE_LABELS[project.property_type] ? (
+            <Badge variant="outline" className="shrink-0">
+              {PROPERTY_TYPE_LABELS[project.property_type]}
+            </Badge>
+          ) : null}
         </div>
         {(project.location || project.area_m2 != null) && (
           <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">

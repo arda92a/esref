@@ -51,6 +51,11 @@ export default async function AdminProjectsPage() {
                       Apartman · {project.project_units?.length ?? 0} Daire Tipi
                     </Badge>
                   )}
+                  {project.is_featured && (
+                    <Badge variant="secondary" className="border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                      ⭐ Öne Çıkarıldı
+                    </Badge>
+                  )}
                   {project.location && <span>{project.location}</span>}
                 </div>
               </div>

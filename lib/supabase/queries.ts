@@ -29,6 +29,24 @@ export async function getProjects(): Promise<Project[]> {
   return (data as Project[]).map(sortUnits);
 }
 
+export async function getFeaturedProjects(): Promise<Project[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select(PROJECT_SELECT)
+    .eq("is_featured", true)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("getFeaturedProjects error:", error.message);
+    return [];
+  }
+
+  return (data as Project[]).map(sortUnits);
+}
+
 export async function getProjectBySlug(
   slug: string
 ): Promise<Project | null> {

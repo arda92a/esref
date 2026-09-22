@@ -119,11 +119,14 @@ export async function saveProject(formData: FormData) {
   ]);
   const galleryImages = [...existingGallery, ...uploadedGallery];
 
+  const isFeatured = formData.get("is_featured") === "true";
+
   const projectPayload = {
     title,
     description,
     location,
     status,
+    is_featured: isFeatured,
     cover_image: coverUrl,
     gallery_images: galleryImages,
     unit_mode: unitMode,
@@ -177,6 +180,7 @@ export async function saveProject(formData: FormData) {
     }
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/projelerim");
   revalidatePath("/projeler");
   redirect("/admin/projelerim");
@@ -291,6 +295,7 @@ export async function deleteProject(id: string) {
   const { error } = await supabase.from("projects").delete().eq("id", id);
   if (error) throw new Error(error.message);
 
+  revalidatePath("/");
   revalidatePath("/admin/projelerim");
   revalidatePath("/projeler");
 }

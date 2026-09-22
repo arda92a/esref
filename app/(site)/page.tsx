@@ -53,7 +53,7 @@ export default async function Home() {
   const ongoingCount = projects.filter(
     (p) => p.status === "devam-ediyor"
   ).length;
-  const featuredProjects = projects.slice(0, 6);
+  const featuredProjects = projects.filter((p) => p.is_featured);
   const experienceYears = new Date().getFullYear() - siteConfig.foundedYear;
 
   return (

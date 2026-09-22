@@ -59,6 +59,7 @@ export interface Project {
   created_at: string;
   updated_at: string;
 
+  is_featured: boolean;
   unit_mode: UnitMode;
   site_name: string | null;
 
