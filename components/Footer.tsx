@@ -56,15 +56,14 @@ export default function Footer() {
                 {siteConfig.address}
               </a>
             </li>
-            <li className="flex items-center gap-2">
-              <Phone className="size-4 shrink-0" />
-              <a
-                href={`tel:${siteConfig.phoneHref}`}
-                className="hover:text-foreground"
-              >
-                {siteConfig.phone}
-              </a>
-            </li>
+            {siteConfig.phones.map((phone) => (
+              <li key={phone.href} className="flex items-center gap-2">
+                <Phone className="size-4 shrink-0" />
+                <a href={`tel:${phone.href}`} className="hover:text-foreground">
+                  {phone.display}
+                </a>
+              </li>
+            ))}
             <li className="flex items-center gap-2">
               <FacebookIcon className="size-4 shrink-0" />
               <a

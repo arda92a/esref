@@ -35,12 +35,14 @@ export default function ContactPage() {
                 {siteConfig.address}
               </a>
             </div>
-            <div className="flex items-center gap-3">
-              <Phone className="size-5 shrink-0 text-muted-foreground" />
-              <a href={`tel:${siteConfig.phoneHref}`} className="hover:underline">
-                {siteConfig.phone}
-              </a>
-            </div>
+            {siteConfig.phones.map((phone) => (
+              <div key={phone.href} className="flex items-center gap-3">
+                <Phone className="size-5 shrink-0 text-muted-foreground" />
+                <a href={`tel:${phone.href}`} className="hover:underline">
+                  {phone.display}
+                </a>
+              </div>
+            ))}
             <div className="flex items-center gap-3">
               <Mail className="size-5 shrink-0 text-muted-foreground" />
               <a href={`mailto:${siteConfig.email}`} className="hover:underline">

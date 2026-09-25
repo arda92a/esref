@@ -15,8 +15,10 @@ export const siteConfig = {
     "anahtar teslim inşaat",
     "müteahhitlik",
   ],
-  phone: "+90 548 834 56 68",
-  phoneHref: "+905488345668",
+  phones: [
+    { display: "+90 548 834 56 68", href: "+905488345668" },
+    { display: "+90 533 868 38 32", href: "+905338683832" },
+  ],
   email: "esreftanrikulu@gmail.com",
   address,
   facebookUrl: "https://www.facebook.com/tanrikuluconstruction/",

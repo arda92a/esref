@@ -56,7 +56,7 @@ const jsonLd = {
   logo: `${siteConfig.siteUrl}/logo-full.png`,
   image: `${siteConfig.siteUrl}/logo-full.png`,
   description: siteConfig.description,
-  telephone: siteConfig.phone,
+  telephone: siteConfig.phones.map((phone) => phone.display),
   email: siteConfig.email,
   foundingDate: String(siteConfig.foundedYear),
   address: {
