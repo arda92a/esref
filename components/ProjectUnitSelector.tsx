@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Bath, BedDouble, Layers, Ruler, Sofa, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import FittedImage from "@/components/FittedImage";
 import ProjectGallery from "@/components/ProjectGallery";
 import { cn, formatPrice } from "@/lib/utils";
 import { FURNISHING_LABELS, ROOM_CONFIG_LABELS, type ProjectUnit } from "@/types/project";
@@ -56,13 +56,11 @@ export default function ProjectUnitSelector({
 
       <div className="mt-6 rounded-2xl border bg-muted/30 p-5 sm:p-6">
         {active.cover_image && (
-          <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-white">
-            <Image
+          <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-muted">
+            <FittedImage
               src={active.cover_image}
               alt={`${title} - ${active.name}`}
-              fill
               sizes="(min-width: 768px) 700px, 100vw"
-              className="object-contain"
             />
           </div>
         )}

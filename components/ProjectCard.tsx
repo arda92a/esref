@@ -1,9 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { cn, formatPrice } from "@/lib/utils";
+import FittedImage from "@/components/FittedImage";
+import { formatPrice } from "@/lib/utils";
 import {
   PROPERTY_TYPE_LABELS,
   ROOM_CONFIG_LABELS,
@@ -64,14 +64,7 @@ function LandSummary({ project }: { project: Project }) {
   return <p className="mt-1 text-sm text-muted-foreground">{parts.join(" · ")}</p>;
 }
 
-export default function ProjectCard({
-  project,
-  fitImage = false,
-}: {
-  project: Project;
-  /** Show the whole cover photo (no cropping) on a white background. */
-  fitImage?: boolean;
-}) {
+export default function ProjectCard({ project }: { project: Project }) {
   const isMultiUnit = project.unit_mode === "coklu";
   const priceLabel = getCardPriceLabel(project);
 
@@ -80,22 +73,13 @@ export default function ProjectCard({
       href={`/projeler/${project.slug}`}
       className="group overflow-hidden rounded-lg border bg-card transition-shadow hover:shadow-md"
     >
-      <div
-        className={cn(
-          "relative aspect-[4/3] w-full overflow-hidden",
-          fitImage && project.cover_image ? "bg-white" : "bg-muted"
-        )}
-      >
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
         {project.cover_image ? (
-          <Image
+          <FittedImage
             src={project.cover_image}
             alt={project.title}
-            fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className={cn(
-              "transition-transform duration-300 group-hover:scale-105",
-              fitImage ? "object-contain" : "object-cover"
-            )}
+            className="transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-muted-foreground">

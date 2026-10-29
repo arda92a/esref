@@ -1,9 +1,9 @@
-import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MapPin } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import FittedImage from "@/components/FittedImage";
 import ProjectGallery from "@/components/ProjectGallery";
 import ProjectDetails from "@/components/ProjectDetails";
 import ProjectUnitSelector from "@/components/ProjectUnitSelector";
@@ -48,19 +48,13 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   return (
     <article className="mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-20">
-      <div
-        className={`relative aspect-video w-full overflow-hidden rounded-lg ${
-          project.cover_image ? "bg-white" : "bg-muted"
-        }`}
-      >
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
         {project.cover_image ? (
-          <Image
+          <FittedImage
             src={project.cover_image}
             alt={project.title}
-            fill
             sizes="100vw"
             priority
-            className="object-contain"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
