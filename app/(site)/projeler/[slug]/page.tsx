@@ -48,7 +48,11 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   return (
     <article className="mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-20">
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
+      <div
+        className={`relative aspect-video w-full overflow-hidden rounded-lg ${
+          project.cover_image ? "border bg-background" : "bg-muted"
+        }`}
+      >
         {project.cover_image ? (
           <Image
             src={project.cover_image}
@@ -56,7 +60,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             fill
             sizes="100vw"
             priority
-            className="object-cover"
+            className="object-contain"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-muted-foreground">

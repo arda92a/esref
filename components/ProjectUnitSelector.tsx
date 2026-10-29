@@ -56,13 +56,13 @@ export default function ProjectUnitSelector({
 
       <div className="mt-6 rounded-2xl border bg-muted/30 p-5 sm:p-6">
         {active.cover_image && (
-          <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-muted">
+          <div className="relative aspect-video w-full overflow-hidden rounded-xl border bg-background">
             <Image
               src={active.cover_image}
               alt={`${title} - ${active.name}`}
               fill
               sizes="(min-width: 768px) 700px, 100vw"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         )}
