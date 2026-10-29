@@ -50,7 +50,7 @@ export default async function ProjectDetailPage({ params }: Props) {
     <article className="mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-20">
       <div
         className={`relative aspect-video w-full overflow-hidden rounded-lg ${
-          project.cover_image ? "border bg-background" : "bg-muted"
+          project.cover_image ? "bg-white" : "bg-muted"
         }`}
       >
         {project.cover_image ? (

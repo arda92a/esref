@@ -48,7 +48,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
               key={project.id}
               className="min-w-0 shrink-0 grow-0 basis-full pl-4 sm:basis-1/2 lg:basis-1/3"
             >
-              <ProjectCard project={project} />
+              <ProjectCard project={project} fitImage />
             </div>
           ))}
         </div>
