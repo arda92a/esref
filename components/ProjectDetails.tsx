@@ -182,19 +182,23 @@ export default function ProjectDetails({ project }: { project: Project }) {
       </h2>
 
       {hasPrice && (
-        <div className="mt-2">
-          <p className="text-2xl font-bold text-brand">
+        isLand && project.price_is_starting ? (
+          <div className="mt-4 rounded-2xl border border-brand/25 bg-brand/10 px-5 py-4 sm:px-6 sm:py-5">
+            <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-brand">
+              <span className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+                {formatPrice(project.price as number, project.price_currency!)}’
+                {turkishAblativeSuffix(project.price as number)}
+              </span>
+              <span className="text-xl font-semibold sm:text-2xl">
+                başlayan fiyatlarla
+              </span>
+            </p>
+          </div>
+        ) : (
+          <p className="mt-2 text-2xl font-bold text-brand">
             {formatPrice(project.price as number, project.price_currency!)}
-            {isLand && project.price_is_starting && (
-              <>
-                ’{turkishAblativeSuffix(project.price as number)}
-                <span className="ml-2 text-sm font-medium text-muted-foreground">
-                  başlayan fiyatlarla
-                </span>
-              </>
-            )}
           </p>
-        </div>
+        )
       )}
 
       {items.length > 0 && (
