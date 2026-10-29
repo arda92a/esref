@@ -25,6 +25,8 @@ import {
   PROPERTY_TYPE_LABELS,
   ROOM_CONFIG_LABELS,
   UNIT_MODE_LABELS,
+  ZONING_STATUS_LABELS,
+  isLandType,
   type Furnishing,
   type PriceCurrency,
   type Project,
@@ -33,6 +35,7 @@ import {
   type ProjectStatus,
   type RoomConfig,
   type UnitMode,
+  type ZoningStatus,
 } from "@/types/project";
 
 const NONE = "none";
@@ -95,6 +98,40 @@ function emptyUnitDraft(defaultCurrency: PriceCurrency): UnitDraft {
   };
 }
 
+function SegmentedControl<T extends string>({
+  options,
+  value,
+  onChange,
+}: {
+  options: { value: T; label: string }[];
+  value: T | null;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div
+      className="grid gap-1 rounded-lg border bg-muted/30 p-1"
+      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+    >
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          aria-pressed={value === option.value}
+          onClick={() => onChange(option.value)}
+          className={cn(
+            "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+            value === option.value
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function AmenityCheckbox({
   name,
   label,
@@ -148,6 +185,20 @@ export default function ProjectForm({ project }: { project?: Project }) {
     (project?.project_units ?? []).map(unitToDraft)
   );
   const [deletedUnitIds, setDeletedUnitIds] = useState<string[]>([]);
+  const [zoningStatus, setZoningStatus] = useState<ZoningStatus | null>(
+    project?.zoning_status ?? null
+  );
+  const [priceIsStarting, setPriceIsStarting] = useState<boolean>(
+    project?.price_is_starting ?? false
+  );
+  const [landFeatures, setLandFeatures] = useState<string[]>(
+    project?.features ?? []
+  );
+
+  const isLand =
+    unitMode === "tekil" &&
+    propertyType !== NONE &&
+    isLandType(propertyType as PropertyType);
 
   const showHousingDetails =
     propertyType === NONE ||
@@ -395,6 +446,23 @@ export default function ProjectForm({ project }: { project?: Project }) {
 
           <div className="space-y-1.5">
             <Label htmlFor="price">Fiyat</Label>
+            {isLand && (
+              <>
+                <input
+                  type="hidden"
+                  name="price_is_starting"
+                  value={priceIsStarting ? "true" : "false"}
+                />
+                <SegmentedControl
+                  options={[
+                    { value: "net", label: "Net Fiyat" },
+                    { value: "starting", label: "Başlangıç Fiyatı" },
+                  ]}
+                  value={priceIsStarting ? "starting" : "net"}
+                  onChange={(v) => setPriceIsStarting(v === "starting")}
+                />
+              </>
+            )}
             <div className="flex gap-2">
               <Input
                 id="price"
@@ -404,7 +472,7 @@ export default function ProjectForm({ project }: { project?: Project }) {
                 step="any"
                 inputMode="decimal"
                 defaultValue={project?.price ?? ""}
-                placeholder="Örn: 250000"
+                placeholder={isLand ? "Örn: 100000" : "Örn: 250000"}
               />
               <input type="hidden" name="price_currency" value={priceCurrency} />
               <Select
@@ -421,6 +489,13 @@ export default function ProjectForm({ project }: { project?: Project }) {
                 </SelectContent>
               </Select>
             </div>
+            {isLand && (
+              <p className="text-xs text-muted-foreground">
+                {priceIsStarting
+                  ? "Detay sayfasında “£100.000’den başlayan fiyatlarla”, kartlarda “£100.000+” şeklinde gösterilir."
+                  : "Sitede girilen fiyat aynen gösterilir."}
+              </p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -433,11 +508,80 @@ export default function ProjectForm({ project }: { project?: Project }) {
               step="any"
               inputMode="decimal"
               defaultValue={project?.area_m2 ?? ""}
-              placeholder="Örn: 120"
+              placeholder={isLand ? "Örn: 1000" : "Örn: 120"}
             />
           </div>
         </div>
       </div>
+
+      {isLand && (
+        <div className="space-y-4 rounded-lg border p-4">
+          <h3 className="text-sm font-semibold text-foreground">
+            {propertyType === "tarla" ? "Tarla" : "Arsa"} Detayları
+          </h3>
+
+          <div className="space-y-1.5">
+            <Label>İmar Durumu</Label>
+            <input type="hidden" name="zoning_status" value={zoningStatus ?? ""} />
+            <div className="sm:w-72">
+              <SegmentedControl
+                options={(
+                  Object.entries(ZONING_STATUS_LABELS) as [ZoningStatus, string][]
+                ).map(([value, label]) => ({ value, label }))}
+                value={zoningStatus}
+                onChange={setZoningStatus}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="zoning_ratio">İmar Oranı (%)</Label>
+              <div className="relative">
+                <Input
+                  id="zoning_ratio"
+                  name="zoning_ratio"
+                  type="number"
+                  min={0}
+                  max={1000}
+                  step="any"
+                  inputMode="decimal"
+                  defaultValue={project?.zoning_ratio ?? ""}
+                  placeholder="Örn: 40"
+                  className="pr-9"
+                />
+                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-muted-foreground">
+                  %
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="floor_permit">Kat İzni</Label>
+              <Input
+                id="floor_permit"
+                name="floor_permit"
+                type="number"
+                min={1}
+                max={99}
+                step={1}
+                inputMode="numeric"
+                defaultValue={project?.floor_permit ?? ""}
+                placeholder="Örn: 3"
+              />
+              <p className="text-xs text-muted-foreground">1 ile 99 arasında.</p>
+            </div>
+          </div>
+
+          <FeatureTagsEditor
+            prefix="project"
+            label="Ek Özellikler"
+            placeholder="Örn: Yola Cepheli"
+            features={landFeatures}
+            onChange={setLandFeatures}
+          />
+        </div>
+      )}
 
       {showHousingDetails && (
         <div className="space-y-4 rounded-lg border p-4">
@@ -591,6 +735,7 @@ export default function ProjectForm({ project }: { project?: Project }) {
         </div>
       )}
 
+      {!isLand && (
       <div className="space-y-2">
         <h3 className="text-sm font-semibold text-foreground">
           Ek Özellikler
@@ -623,6 +768,7 @@ export default function ProjectForm({ project }: { project?: Project }) {
           />
         </div>
       </div>
+      )}
 
       <div className="space-y-1.5">
         <Label htmlFor="cover_image">
@@ -996,10 +1142,14 @@ function UnitFieldset({
 
 function FeatureTagsEditor({
   prefix,
+  label = "Özellikler",
+  placeholder = "Örn: Ormana Bakan",
   features,
   onChange,
 }: {
   prefix: string;
+  label?: string;
+  placeholder?: string;
   features: string[];
   onChange: (features: string[]) => void;
 }) {
@@ -1026,7 +1176,7 @@ function FeatureTagsEditor({
         name={`${prefix}_features`}
         value={JSON.stringify(features)}
       />
-      <Label htmlFor={`${prefix}_feature_input`}>Özellikler</Label>
+      <Label htmlFor={`${prefix}_feature_input`}>{label}</Label>
       <div className="flex gap-2">
         <Input
           id={`${prefix}_feature_input`}
@@ -1038,7 +1188,7 @@ function FeatureTagsEditor({
               addFeature();
             }
           }}
-          placeholder="Örn: Ormana Bakan"
+          placeholder={placeholder}
           maxLength={40}
         />
         <Button type="button" variant="outline" onClick={addFeature}>

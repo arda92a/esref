@@ -6,7 +6,11 @@ export type PropertyType =
   | "mustakil-ev"
   | "ofis"
   | "depo"
-  | "atolye";
+  | "atolye"
+  | "arsa"
+  | "tarla";
+
+export type ZoningStatus = "konut" | "ticari";
 
 export type PriceCurrency = "TRY" | "USD" | "GBP";
 
@@ -80,6 +84,17 @@ export interface Project {
   mortgage_eligible: boolean;
   swap_eligible: boolean;
 
+  /** Land-only fields (arsa / tarla). */
+  zoning_status: ZoningStatus | null;
+  /** İmar oranı, as a percentage (e.g. 40 = %40). */
+  zoning_ratio: number | null;
+  /** Kat izni: allowed number of floors (1–99). */
+  floor_permit: number | null;
+  /** When true the price is shown as a starting price. */
+  price_is_starting: boolean;
+  /** Free-form feature tags, e.g. "Yola Cepheli" (used for arsa / tarla). */
+  features: string[];
+
   /** Populated via join; only present/non-empty when unit_mode is "coklu". */
   project_units?: ProjectUnit[];
 }
@@ -91,6 +106,13 @@ export const PROPERTY_TYPE_LABELS: Record<PropertyType, string> = {
   ofis: "Ofis",
   depo: "Depo",
   atolye: "Atölye",
+  arsa: "Arsa",
+  tarla: "Tarla",
+};
+
+export const ZONING_STATUS_LABELS: Record<ZoningStatus, string> = {
+  konut: "Konut",
+  ticari: "Ticari",
 };
 
 export const ROOM_CONFIG_LABELS: Record<RoomConfig, string> = {
@@ -123,6 +145,13 @@ export const HOUSING_PROPERTY_TYPES: PropertyType[] = [
   "villa",
   "mustakil-ev",
 ];
+
+/** Land types only use zoning fields, area and price. */
+export const LAND_PROPERTY_TYPES: PropertyType[] = ["arsa", "tarla"];
+
+export function isLandType(type: PropertyType | null | undefined): boolean {
+  return !!type && LAND_PROPERTY_TYPES.includes(type);
+}
 
 export const UNIT_MODE_LABELS: Record<UnitMode, string> = {
   tekil: "Tekil Yapı (Villa / Müstakil Ev)",

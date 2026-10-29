@@ -7,6 +7,8 @@ import { formatPrice } from "@/lib/utils";
 import {
   PROPERTY_TYPE_LABELS,
   ROOM_CONFIG_LABELS,
+  ZONING_STATUS_LABELS,
+  isLandType,
   type Project,
 } from "@/types/project";
 
@@ -27,7 +29,10 @@ function getCardPriceLabel(project: Project): string | null {
     )}`;
   }
   if (project.price != null && project.price_currency) {
-    return formatPrice(project.price, project.price_currency);
+    const label = formatPrice(project.price, project.price_currency);
+    return isLandType(project.property_type) && project.price_is_starting
+      ? `${label}+`
+      : label;
   }
   return null;
 }
@@ -43,6 +48,20 @@ function UnitRoomConfigs({ project }: { project: Project }) {
       {roomConfigs.map((rc) => ROOM_CONFIG_LABELS[rc]).join(" · ")}
     </p>
   );
+}
+
+function LandSummary({ project }: { project: Project }) {
+  const parts = [
+    project.zoning_status
+      ? `${ZONING_STATUS_LABELS[project.zoning_status]} İmarlı`
+      : null,
+    project.zoning_ratio != null
+      ? `İmar %${new Intl.NumberFormat("tr-TR").format(project.zoning_ratio)}`
+      : null,
+    project.floor_permit != null ? `${project.floor_permit} Kat İzni` : null,
+  ].filter(Boolean);
+  if (parts.length === 0) return null;
+  return <p className="mt-1 text-sm text-muted-foreground">{parts.join(" · ")}</p>;
 }
 
 export default function ProjectCard({ project }: { project: Project }) {
@@ -107,6 +126,9 @@ export default function ProjectCard({ project }: { project: Project }) {
           </p>
         )}
         {isMultiUnit && <UnitRoomConfigs project={project} />}
+        {!isMultiUnit && isLandType(project.property_type) && (
+          <LandSummary project={project} />
+        )}
       </div>
     </Link>
   );

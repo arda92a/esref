@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { createClient } from "@/lib/supabase/server";
+import { isLandType, type PropertyType } from "@/types/project";
 
 const turkishMap: Record<string, string> = {
   ı: "i",
@@ -67,15 +68,50 @@ export async function saveProject(formData: FormData) {
       : null;
 
   const propertyType = formData.get("property_type")?.toString() || null;
+  const isLand =
+    unitMode === "tekil" && isLandType(propertyType as PropertyType | null);
+
+  // Land (arsa / tarla) listings only carry zoning fields, area and price, so
+  // building/housing fields and amenities are cleared for them.
   const buildingAgeRaw = formData.get("building_age")?.toString().trim();
-  const buildingAge = buildingAgeRaw ? Number(buildingAgeRaw) : null;
+  const buildingAge = !isLand && buildingAgeRaw ? Number(buildingAgeRaw) : null;
   const floorCountRaw = formData.get("floor_count")?.toString().trim();
-  const floorCount = floorCountRaw ? Number(floorCountRaw) : null;
-  const hasParking = formData.get("has_parking") === "true";
-  const hasPool = formData.get("has_pool") === "true";
-  const hasBalcony = formData.get("has_balcony") === "true";
-  const mortgageEligible = formData.get("mortgage_eligible") === "true";
-  const swapEligible = formData.get("swap_eligible") === "true";
+  const floorCount = !isLand && floorCountRaw ? Number(floorCountRaw) : null;
+  const hasParking = !isLand && formData.get("has_parking") === "true";
+  const hasPool = !isLand && formData.get("has_pool") === "true";
+  const hasBalcony = !isLand && formData.get("has_balcony") === "true";
+  const mortgageEligible = !isLand && formData.get("mortgage_eligible") === "true";
+  const swapEligible = !isLand && formData.get("swap_eligible") === "true";
+
+  let zoningStatus: string | null = null;
+  let zoningRatio: number | null = null;
+  let floorPermit: number | null = null;
+  let priceIsStarting = false;
+  let features: string[] = [];
+
+  if (isLand) {
+    const zoningRaw = formData.get("zoning_status")?.toString();
+    zoningStatus = zoningRaw === "konut" || zoningRaw === "ticari" ? zoningRaw : null;
+    const ratioRaw = formData.get("zoning_ratio")?.toString().trim();
+    zoningRatio = ratioRaw ? Number(ratioRaw) : null;
+    if (zoningRatio !== null && (!Number.isFinite(zoningRatio) || zoningRatio < 0)) {
+      throw new Error("İmar oranı geçerli bir yüzde olmalıdır.");
+    }
+    const permitRaw = formData.get("floor_permit")?.toString().trim();
+    floorPermit = permitRaw ? Number(permitRaw) : null;
+    if (
+      floorPermit !== null &&
+      (!Number.isInteger(floorPermit) || floorPermit < 1 || floorPermit > 99)
+    ) {
+      throw new Error("Kat izni 1 ile 99 arasında bir sayı olmalıdır.");
+    }
+    priceIsStarting = formData.get("price_is_starting") === "true";
+    const featuresRaw = formData.get("project_features")?.toString() || "[]";
+    features = (JSON.parse(featuresRaw) as unknown[])
+      .filter((f): f is string => typeof f === "string")
+      .map((f) => f.trim())
+      .filter(Boolean);
+  }
 
   // Room/price/area/furnishing only apply at the project level for "tekil"
   // (single-structure) projects; "coklu" projects carry these per unit instead.
@@ -94,11 +130,13 @@ export async function saveProject(formData: FormData) {
       price !== null ? formData.get("price_currency")?.toString() || "GBP" : null;
     const areaRaw = formData.get("area_m2")?.toString().trim();
     areaM2 = areaRaw ? Number(areaRaw) : null;
-    roomConfig = formData.get("room_config")?.toString() || null;
-    const bathroomRaw = formData.get("bathroom_count")?.toString().trim();
-    bathroomCount = bathroomRaw ? Number(bathroomRaw) : null;
-    floorNo = formData.get("floor_no")?.toString().trim() || null;
-    furnishing = formData.get("furnishing")?.toString() || null;
+    if (!isLand) {
+      roomConfig = formData.get("room_config")?.toString() || null;
+      const bathroomRaw = formData.get("bathroom_count")?.toString().trim();
+      bathroomCount = bathroomRaw ? Number(bathroomRaw) : null;
+      floorNo = formData.get("floor_no")?.toString().trim() || null;
+      furnishing = formData.get("furnishing")?.toString() || null;
+    }
   }
 
   const coverFile = formData.get("cover_image");
@@ -148,6 +186,11 @@ export async function saveProject(formData: FormData) {
     has_balcony: hasBalcony,
     mortgage_eligible: mortgageEligible,
     swap_eligible: swapEligible,
+    zoning_status: zoningStatus,
+    zoning_ratio: zoningRatio,
+    floor_permit: floorPermit,
+    price_is_starting: priceIsStarting,
+    features,
   };
 
   let projectId = id;
